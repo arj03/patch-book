@@ -14,6 +14,7 @@ user-related:
 - read (datetime)
 - review
 - shelves
+- categories/genres
 
 ## Dependencies:
 
