@@ -42,21 +42,19 @@ module.exports = {
     
     pull(
       this.getStreamByType('bookclub'),
+      pull.asyncMap((msg, cb) => {
+        var book = {
+          key: msg.key,
+          common: msg.content.common,
+          subjective: {}
+        }
+        book.subjective[msg.author] = msg.content.subjective
+        books.push(book)
+
+        this.applyAmends(book, cb)
+      }),
       pull.collect((err, msgs) => {
-        if (err) throw err
-
-        msgs.forEach(msg => {
-          var book = {
-            key: msg.key,
-            common: msg.content.common,
-            subjective: {}
-          }
-          book.subjective[msg.author] = msg.content.subjective
-
-          books.push(book)
-
-          this.applyAmends(book, cb)
-        })
+        cb(books)
       })
     )
   },
@@ -68,7 +66,7 @@ module.exports = {
     pull(
       sbot.links({ dest: book.key }), // live: true
       pull.filter(data => data.key),
-      pull.asyncMap(function (data, cb) {
+      pull.asyncMap((data, cb) => {
         sbot.get(data.key, cb)
       }),
       pull.collect((err, msgs) => { // for live use drain
@@ -79,8 +77,7 @@ module.exports = {
           book.subjective[msg.author] = Object.assign(book.subjective[msg.author], msg.content.subjective)
         })
 
-        // evil hack
-        cb([book])
+        cb(book)
       })
     )
   },
