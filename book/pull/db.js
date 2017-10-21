@@ -8,37 +8,16 @@ exports.gives = nest({
 exports.needs = nest({
   'sbot.pull.messagesByType': 'first',
   'sbot.pull.links': 'first',
-  'sbot.async.get': 'first',
-  'sbot.async.publish': 'first'
+  'sbot.async.get': 'first'
 })
 
 exports.create = function (api) {
 
   return nest({
     'book.pull.get': get,
-    'book.pull.getAll': getAll,
-    'book.pull.create': create,
-    'book.pull.amend': amend
+    'book.pull.getAll': getAll
   })
   
-  function create(commonObj, subjectiveObj, cb)
-  {
-    api.sbot.async.publish({ type: 'bookclub',
-                             common: commonObj,
-                             subjective: subjectiveObj }, cb)
-  }
-
-  function amend(id, commonObj, subjectiveObj, cb)
-  {
-    let msg = { type: 'bookclub-update', root: id }
-    if (commonObj)
-      msg.common = commonObj
-    if (subjectiveObj)
-      msg.subjective = subjectiveObj
-    
-    api.sbot.async.publish(msg, cb)
-  }
-
   function get(key, cb) {
     pull(
       api.sbot.async.get(key),
