@@ -31,7 +31,6 @@ exports.create = function (api) {
   }
 
   function booksPage (path) {
-    console.log("books")
     const creator = api.book.html.create({}) // FIXME
     const { container, content } = api.app.html.scroller({prepend: [creator]})
 

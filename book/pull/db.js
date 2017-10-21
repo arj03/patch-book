@@ -42,18 +42,15 @@ exports.create = function (api) {
   function get(key, cb) {
     pull(
       api.sbot.async.get(key),
-      pull.asyncMap((msg, cb) => hydrate(msg, cb)),
-      pull.drain(book => cb(book))
+      pull.asyncMap(hydrate),
+      pull.drain(cb)
     )
   }
   
-  function getAll(cb) {
-    pull(
+  function getAll() {
+    return pull(
       api.sbot.pull.messagesByType({ type: 'bookclub', fillCache: true, keys: false }),
-      pull.asyncMap((msg, cb) => hydrate(msg, cb)),
-      pull.collect((books) => {
-        cb([books]) // FIXME: array?
-      })
+      pull.asyncMap(hydrate)
     )
   }
 
