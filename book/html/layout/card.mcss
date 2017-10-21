@@ -1,0 +1,52 @@
+Message -book-card {
+  section.avatar {
+    top: 2.7rem
+  }
+
+  section.timestamp {
+    top: 6.7rem
+  }
+
+  section.content {
+    margin-bottom: .5rem
+
+    a {
+      display: flex
+      flex-wrap: wrap
+
+      color: initial 
+      :hover { text-decoration: none }
+
+      div.toggle-layout {
+        position: absolute
+        top: 3.0rem
+        right: 1rem
+        border: none
+        border-radius: 0
+        background-color: rgba(255,255,255,0.2)
+        color: #fff;
+        font-size: 1rem;
+        font-weight: 600;
+        line-height: .8rem
+      }
+
+      div.details {
+        flex-grow: 1
+        max-width: 21rem
+        
+        border: 1px gainsboro solid
+        border-right: none
+        padding: .5rem
+
+        section.title {
+          font-size: 1.8rem
+          margin-bottom: 1rem
+        }
+        section {
+
+        }
+      }
+    }
+  }
+}
+

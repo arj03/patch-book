@@ -3,9 +3,9 @@
 ## Attributes:
 
 common:
-- isbn
 - title
 - authors
+- description
 - [images]
 
 subjective:
@@ -28,6 +28,12 @@ who posted it and merge into a list.
 Initial rough version to test idea.
 
 SameAs (for merging multiple books) might be needed, but can be added later.
+
+## TODO
+
+- Add interface to create new books
+- Ability to change books
+- Add subjective
 
 ## Methods
 

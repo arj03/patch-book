@@ -9,7 +9,7 @@ var createSbot = require('scuttlebot')
 var db = require('../db.js')
 
 const common = { title: 'The moon is a harsh mistress', authors: 'Robert A. Heinlein' }
-const subjective = { rating: 5, 'rating-type': 'stars', read: Date.now() }
+const subjective = { rating: 5, 'ratingType': 'stars', read: Date.now() }
 
 function getSbot()
 {
@@ -22,8 +22,7 @@ function getSbot()
 tape('simple create', function (t) {
   var sbot = getSbot()
 
-  var bookDB = db.bookDB(sbot)
-  bookDB.create(common, subjective, (err, msg) => {
+  db.create(sbot, common, subjective, (err, msg) => {
     pull(
       sbot.messagesByType({ type: "bookclub", fillCache: true, keys: false }),
       pull.collect((err, data) => {
@@ -39,14 +38,13 @@ tape('simple create', function (t) {
 tape('simple amend', function (t) {
   var sbot = getSbot()
 
-  var bookDB = db.bookDB(sbot)
-  bookDB.create(common, subjective, (err, msg) => {
+  db.create(sbot, common, subjective, (err, msg) => {
     const newRating = { rating: 4 }
-    bookDB.amend(msg.key, null, newRating, (err, msg) => {
+    db.amend(sbot, msg.key, null, newRating, (err, msg) => {
       const newAuthor = { authors: "El gringo" }
       const readInfo = { shelves: "read", rating: 4.5, ratingType: "stars" }
-      bookDB.amend(msg.key, newAuthor, readInfo, (err, msg) => {
-        bookDB.getAll(books => {
+      db.amend(sbot, msg.key, newAuthor, readInfo, (err, msg) => {
+        db.getAll(sbot, books => {
           t.deepEqual(books[0].common, Object.assign(common, newAuthor), "book common amended correctly")
           t.deepEqual(books[0].subjective[msg.value.author],
                       Object.assign(Object.assign(subjective, newRating), readInfo),
