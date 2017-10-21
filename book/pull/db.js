@@ -2,7 +2,7 @@ const pull = require('pull-stream')
 const nest = require('depnest')
 
 exports.gives = nest({
-  'book.pull': ['get', 'getAll', 'create', 'amend']
+  'book.pull': ['get', 'getAll']
 })
 
 exports.needs = nest({

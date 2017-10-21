@@ -10,6 +10,7 @@ exports.needs = nest({
   },
   'book.html': {
     'title': 'first',
+    'authors': 'first',
     'description': 'first'
   }
 })

@@ -25,14 +25,6 @@ exports.create = function (api) {
       })
     })
 
-    // FIXME: usage
-    book.create = function(commonObj, subjectiveObj, cb)
-    {
-      api.sbot.async.publish({ type: 'bookclub',
-                               common: commonObj,
-                               subjective: subjectiveObj }, cb)
-    }
-
     book.amend = function(cb)
     {
       let msg = { type: 'bookclub-update', root: id }
