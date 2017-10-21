@@ -25,7 +25,7 @@ exports.create = function (api) {
 
   function menuItem (handleClick) {
     return h('a', {
-      style: { order: 0 },
+      style: { order: 5 },
       'ev-click': () => handleClick({ page: 'books' })
     }, '/books')
   }

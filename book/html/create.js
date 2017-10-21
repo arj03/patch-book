@@ -11,7 +11,6 @@ exports.gives = nest('book.html.create')
 exports.create = function (api) {
   return nest({ 'book.html.create': create })
 
-  // FIXME: observable book (probably book/obs/book.js
   // FIXME: UI to set
   function create() {
     // FIXME: create using db & the observable
