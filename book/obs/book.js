@@ -20,7 +20,7 @@ exports.create = function (api) {
       // FIXME: subjective
       Object.keys(dbBook.common).forEach((k) => {
         if (dbBook.common[k]) {
-          book.common[k].set(dbBook.common[k])
+          book[k].set(dbBook.common[k])
         }
       })
     })
@@ -29,14 +29,16 @@ exports.create = function (api) {
     {
       let msg = { type: 'bookclub-update', root: id }
 
-      if (book.common) {
-        msg.common = {}
-        Object.keys(book.common).forEach((k) => {
-          if (book.common[k]) {
-            msg.common[k] = book.common[k]()
-          }
-        })
+      let s = book()
+
+      msg.common = {
+        title: s.title,
+        authors: s.authors,
+        description: s.description
       }
+
+      console.log(msg)
+      return
 
       /* FIXME
       if (book.subjective)

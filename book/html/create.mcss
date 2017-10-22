@@ -1,0 +1,30 @@
+Create -book {
+  section.content input {
+    margin-left: 5px
+    border: 1px solid gainsboro
+  }
+
+  section.content textarea {
+    margin-left: 5px
+    border: 1px solid gainsboro
+  }
+
+  -contracted {
+    section.actions {
+      display: none
+    }
+    section.content {
+      display: none
+    }
+  }
+  
+  -expanded {
+    section.actions {
+      display: block
+    }
+    section.content {
+      display: block
+    }
+  }
+}
+

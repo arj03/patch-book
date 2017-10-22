@@ -56,14 +56,9 @@ Message -book-detail {
     display: flex
     justify-content: flex-start
 
-    button.attend {
-      margin-left: 0
-    }
-
     button.edit {
       margin-left: auto 
     }
-
   }
 }
 
