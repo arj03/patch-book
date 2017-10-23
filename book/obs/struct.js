@@ -1,6 +1,10 @@
 const nest = require('depnest')
 const { Value, Set, Struct, forEachPair } = require('mutant')
 
+exports.needs = nest({
+  'sbot.async.publish': 'first'
+})
+
 exports.gives = nest('book.obs.struct')
 
 exports.create = function (api) {
@@ -21,12 +25,10 @@ exports.create = function (api) {
       let commonObj = {
         title: s.title,
         authors: s.authors,
-        description: s.description
+        description: s.description,
+        images: s.images
       }
-      let subjectiveObj = null // FIXME
-
-      console.log(commonObj)
-      return
+      let subjectiveObj = null
 
       api.sbot.async.publish({ type: 'bookclub',
                                common: commonObj,

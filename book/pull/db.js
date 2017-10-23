@@ -20,23 +20,27 @@ exports.create = function (api) {
   
   function get(key, cb) {
     pull(
-      api.sbot.async.get(key),
-      pull.asyncMap(hydrate),
+      pull.values([key]),
+      pull.asyncMap((key, cb) => {
+        api.sbot.async.get(key, cb)
+      }),
+      pull.asyncMap((msg) => hydrate(msg, key, cb)),
       pull.drain(cb)
     )
   }
   
   function getAll() {
+    // FIXME: doesn't return correctly
     return pull(
-      api.sbot.pull.messagesByType({ type: 'bookclub', fillCache: true, keys: false }),
-      pull.asyncMap(hydrate)
+      api.sbot.pull.messagesByType({ type: 'bookclub', fillCache: true, keys: true }),
+      pull.asyncMap((msg) => hydrate(msg.value, msg.key))
     )
   }
 
   // internal
 
   function applyAmends(book, cb) {
-    pull(
+    return pull(
       api.sbot.pull.links({ dest: book.key }), // live: true
       pull.filter(data => data.key),
       pull.asyncMap((data, cb) => {
@@ -46,25 +50,28 @@ exports.create = function (api) {
         if (err) throw err
 
         msgs.forEach(msg => {
+          if (msg.type !== "bookclub-update") return
+
           book.common = Object.assign(book.common, msg.content.common)
           book.subjective[msg.author] = Object.assign(book.subjective[msg.author],
                                                       msg.content.subjective)
         })
 
-        cb(book)
+        if (cb)
+          cb(book)
       })
     )
   }
   
-  function hydrate(msg, cb)
+  function hydrate(msg, key, cb)
   {
     var book = {
-      key: msg.key,
+      key: key,
       common: msg.content.common,
       subjective: {}
     }
     book.subjective[msg.author] = msg.content.subjective
 
-    applyAmends(book, cb)
+    return applyAmends(book, cb)
   }
 }

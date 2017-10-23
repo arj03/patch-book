@@ -15,7 +15,9 @@ exports.needs = nest({
   'book.obs.book': 'first',
   'book.html': {
     description: 'first',
-    title: 'first'
+    title: 'first',
+    authors: 'first',
+    images: 'first'
   }
 })
 
@@ -31,8 +33,8 @@ exports.create = (api) => {
 
     const { timestamp, meta, backlinks, action } = api.message.html
 
-    const { description, title, authors } = api.book.html
-    
+    const { description, title, authors, images } = api.book.html
+
     const content = [
       h('a', { href: msg.key }, [
         h('.toggle-layout', {
@@ -44,7 +46,8 @@ exports.create = (api) => {
         h('.details', [
           title({title: obs.title, msg}),
           authors({authors: obs.authors}),
-          description({description: obs.description})
+          description({description: obs.description}),
+          images({images: obs.images})
         ])
       ])
     ]

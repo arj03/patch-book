@@ -11,7 +11,8 @@ exports.needs = nest({
   'book.html': {
     'title': 'first',
     'authors': 'first',
-    'description': 'first'
+    'description': 'first',
+    'images': 'first'
   }
 })
 
@@ -25,7 +26,7 @@ exports.create = (api) => {
 
     const { obs, isEditing, isCard } = opts
 
-    const { title, authors, description } = api.book.html
+    const { title, authors, description, images } = api.book.html
     let book = api.book.obs.book(msg.key)
 
     return h('Message -book-detail', [
@@ -37,10 +38,9 @@ exports.create = (api) => {
       }, '-'),
       title({ title: obs.title, msg, isEditing, onUpdate: book.title.set }),
       h('section.content', [
-        //images({images: obs.images, msg, isEditing, onUpdate: book.images.add}),
+        images({images: obs.images, isEditing, onUpdate: book.images.add }),
         h('section.authors', authors({authors: obs.authors, isEditing, onUpdate: book.authors.set})),
         h('section.description', description({description: obs.description, isEditing, onUpdate: book.description.set})),
-        //h('section.time', startDateTime({startDateTime: obs.startDateTime, msg, isEditing, onUpdate: editedGathering.startDateTime.set})),
       ]),
       h('section.actions', [
         h('button.edit', { 'ev-click': () => isEditing.set(!isEditing()) }, when(isEditing, 'Cancel', 'Edit')),

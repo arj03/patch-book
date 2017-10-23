@@ -31,8 +31,7 @@ SameAs (for merging multiple books) might be needed, but can be added later.
 
 ## TODO
 
-- Add interface to create new books
-- Ability to change books
+- Fix books list
 - Add subjective
 
 ## Methods

@@ -5,7 +5,6 @@ const { Value, Struct } =  require('mutant')
 exports.needs = nest({
   'book.pull.get': 'first',
   'book.obs.struct': 'first',
-  'blob.sync.url': 'first',
   'sbot.async.publish': 'first'
 })
 
