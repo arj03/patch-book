@@ -33,7 +33,8 @@ exports.create = function (api) {
       msg.common = {
         title: s.title,
         authors: s.authors,
-        description: s.description
+        description: s.description,
+        images: s.images
       }
 
       console.log(msg)
