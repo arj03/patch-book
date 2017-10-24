@@ -39,6 +39,7 @@ exports.create = function (api) {
       Scroller(container, content, api.book.html.render, false, false)
     )
 
+    container.title = '/books'
     return container
   }
 }
