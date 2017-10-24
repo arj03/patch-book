@@ -21,26 +21,22 @@ exports.create = function (api) {
   function get(key, cb) {
     pull(
       pull.values([key]),
-      pull.asyncMap((key, cb) => {
-        api.sbot.async.get(key, cb)
-      }),
+      pull.asyncMap((key, cb) => api.sbot.async.get(key, cb)),
       pull.asyncMap((msg) => hydrate(msg, key, cb)),
       pull.drain(cb)
     )
   }
   
   function getAll() {
-    // FIXME: doesn't return correctly
     return pull(
-      api.sbot.pull.messagesByType({ type: 'bookclub', fillCache: true, keys: true }),
-      pull.asyncMap((msg) => hydrate(msg.value, msg.key))
+      api.sbot.pull.messagesByType({ type: 'bookclub', fillCache: true, keys: true })
     )
   }
 
   // internal
 
   function applyAmends(book, cb) {
-    return pull(
+    pull(
       api.sbot.pull.links({ dest: book.key }), // live: true
       pull.filter(data => data.key),
       pull.asyncMap((data, cb) => {
@@ -72,6 +68,6 @@ exports.create = function (api) {
     }
     book.subjective[msg.author] = msg.content.subjective
 
-    return applyAmends(book, cb)
+    applyAmends(book, cb)
   }
 }
