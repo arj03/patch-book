@@ -29,20 +29,9 @@ Message -book-detail {
     section {
       margin-bottom: 1rem
     }
-    section.images {
-    }
     
     section.description {
       min-height: 3rem
-    }
-
-    section.time {
-      min-height: 4rem
-      (input) {
-        font-size: 1rem
-        border: 1px solid gainsboro
-      }
-
     }
 
     section.actions {
@@ -58,16 +47,6 @@ Message -book-detail {
 
     button.edit {
       margin-left: auto 
-    }
-  }
-}
-
-StartDateTime {
-  div {
-    input {
-      border: 1px solid gainsboro
-      font-size: 1em
-      width: 16rem
     }
   }
 }

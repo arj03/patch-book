@@ -31,19 +31,26 @@ Message -book-card {
       }
 
       div.details {
+        column-count: 2
         flex-grow: 1
-        max-width: 21rem
+        max-width: 25rem
         
         border: 1px gainsboro solid
-        border-right: none
         padding: .5rem
 
-        section.title {
-          font-size: 1.8rem
-          margin-bottom: 1rem
+        section.images img {
+          max-width: 200px
+          max-height: 200px
         }
-        section {
 
+        section.title {
+          font-size: 1.5rem
+          margin-bottom: 0.3rem
+        }
+
+        section.authors {
+          font-style: italic
+          margin-bottom: 1rem
         }
       }
     }
