@@ -27,7 +27,6 @@ exports.create = (api) => {
     const { obs, isEditing, isCard } = opts
 
     const { title, authors, description, images } = api.book.html
-    let book = api.book.obs.book(msg.key)
 
     return h('Message -book-detail', [
       h('.toggle-layout', {
@@ -36,21 +35,21 @@ exports.create = (api) => {
           isCard.set(true)
         }
       }, '-'),
-      title({ title: obs.title, msg, isEditing, onUpdate: book.title.set }),
+      title({ title: obs.title, msg, isEditing, onUpdate: obs.title.set }),
       h('section.content', [
-        images({images: obs.images, isEditing, onUpdate: book.images.add }),
-        h('section.authors', authors({authors: obs.authors, isEditing, onUpdate: book.authors.set})),
-        h('section.description', description({description: obs.description, isEditing, onUpdate: book.description.set})),
+        images({images: obs.images, isEditing, onUpdate: obs.images.add }),
+        h('section.authors', authors({authors: obs.authors, isEditing, onUpdate: obs.authors.set})),
+        h('section.description', description({description: obs.description, isEditing, onUpdate: obs.description.set})),
       ]),
       h('section.actions', [
         h('button.edit', { 'ev-click': () => isEditing.set(!isEditing()) }, when(isEditing, 'Cancel', 'Edit')),
-        when(isEditing, h('button', {'ev-click': () => save(book)}, 'Update'))
+        when(isEditing, h('button', {'ev-click': () => save(obs)}, 'Update'))
       ])
     ])
 
     function save (obs) {
       // FIXME: check if anything changed
-      book.amend()
+      obs.amend()
 
       isEditing.set(false)
     }

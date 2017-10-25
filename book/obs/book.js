@@ -37,9 +37,6 @@ exports.create = function (api) {
         images: s.images
       }
 
-      console.log(msg)
-      return
-
       /* FIXME
       if (book.subjective)
         msg.subjective = subjectiveObj

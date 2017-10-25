@@ -37,24 +37,19 @@ exports.create = function (api) {
 
   function applyAmends(book, cb) {
     pull(
-      api.sbot.pull.links({ dest: book.key }), // live: true
+      api.sbot.pull.links({ dest: book.key, live: true }),
       pull.filter(data => data.key),
       pull.asyncMap((data, cb) => {
         api.sbot.async.get(data.key, cb)
       }),
-      pull.collect((err, msgs) => { // for live use drain
-        if (err) throw err
+      pull.drain(msg => {
+        if (msg.content.type !== "bookclub-update") return
 
-        msgs.forEach(msg => {
-          if (msg.type !== "bookclub-update") return
+        book.common = Object.assign(book.common, msg.content.common)
+        book.subjective[msg.author] = Object.assign(book.subjective[msg.author] || {},
+                                                    msg.content.subjective)
 
-          book.common = Object.assign(book.common, msg.content.common)
-          book.subjective[msg.author] = Object.assign(book.subjective[msg.author],
-                                                      msg.content.subjective)
-        })
-
-        if (cb)
-          cb(book)
+        cb(book)
       })
     )
   }
