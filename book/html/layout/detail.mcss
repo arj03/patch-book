@@ -1,20 +1,5 @@
 Message -book-detail {
-  div.toggle-layout {
-    font-size: 1rem
-    cursor: pointer
-    position: absolute
-    top: 2rem
-
-    width: 1rem
-    display: flex
-    justify-content: center
-
-    border: 1px solid #fff
-
-    :hover {
-      border: 1px solid gainsboro
-    }
-  }
+  display: block
 
   section.title {
     font-size: 2rem
@@ -25,28 +10,20 @@ Message -book-detail {
     }
   }
 
-  section.content {
-    section {
-      margin-bottom: 1rem
-    }
-    
-    section.description {
-      min-height: 3rem
-    }
-
-    section.actions {
-      display: flex
-      flex-basis: 100%
-      justify-content: flex-end 
-    }
+  section.authors {
+    font-style: italic
   }
 
-  section.actions {
-    display: flex
-    justify-content: flex-start
+  section.content {
+    column-count: 2
+    
+    section.images img {
+      max-width: 300px
+      max-height: 300px
+    }
 
-    button.edit {
-      margin-left: auto 
+    section.description {
+      min-height: 3rem
     }
   }
 }

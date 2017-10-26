@@ -29,16 +29,10 @@ exports.create = (api) => {
     const { title, authors, description, images } = api.book.html
 
     return h('Message -book-detail', [
-      h('.toggle-layout', {
-        'ev-click': e => {
-          e.preventDefault()
-          isCard.set(true)
-        }
-      }, '-'),
       title({ title: obs.title, msg, isEditing, onUpdate: obs.title.set }),
+      authors({authors: obs.authors, isEditing, onUpdate: obs.authors.set}),
       h('section.content', [
         images({images: obs.images, isEditing, onUpdate: obs.images.add }),
-        h('section.authors', authors({authors: obs.authors, isEditing, onUpdate: obs.authors.set})),
         h('section.description', description({description: obs.description, isEditing, onUpdate: obs.description.set})),
       ]),
       h('section.actions', [
