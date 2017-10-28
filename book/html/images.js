@@ -11,15 +11,12 @@ exports.gives = nest('book.html.images')
 exports.create = (api) => {
   return nest('book.html.images', images)
   function images ({images, isEditing, onUpdate}) {
-    const allImages = Set([])
-    images(images => forEach(images, image => allImages.add(image)))
-
     const fileInput = api.blob.html.input(file => {
       onUpdate(file)
     })
 
     return h('section.images', {}, [
-      map(allImages, image => h('img', {src: api.blob.sync.url(image.link)})),
+      map(images, image => h('img', {src: api.blob.sync.url(image.link)})),
       when(isEditing, [h('div', 'Add an image:'), fileInput])
     ])
   }
