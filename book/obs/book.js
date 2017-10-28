@@ -5,6 +5,7 @@ const { Value, Struct, Dict } =  require('mutant')
 exports.needs = nest({
   'book.pull.get': 'first',
   'book.obs.struct': 'first',
+  'keys.sync.id': 'first',
   'sbot.async.publish': 'first'
 })
 
@@ -44,10 +45,8 @@ exports.create = function (api) {
         images: s.images
       }
 
-      /* FIXME
       if (book.subjective)
-        msg.subjective = subjectiveObj
-       */
+        msg.subjective = s.subjective[api.keys.sync.id()]
 
       api.sbot.async.publish(msg, cb)
     }
