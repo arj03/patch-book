@@ -1,12 +1,29 @@
 Message -book-detail {
   display: block
 
+  section.title, section.authors {
+    input {
+      border: 1px solid gainsboro
+    }
+  }
+
+  section.subjective {
+    column-count: 2
+
+    section {
+      div {
+        textarea, input {
+          border: 1px solid gainsboro
+        }
+      }
+    }
+  }
+
   section.title {
     font-size: 2rem
 
     input {
       font-size: 2rem
-      border: 1px solid gainsboro
     }
   }
 

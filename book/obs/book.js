@@ -1,6 +1,6 @@
 const nest = require('depnest')
 const ref = require('ssb-ref')
-const { Value, Struct } =  require('mutant')
+const { Value, Struct, Dict } =  require('mutant')
 
 exports.needs = nest({
   'book.pull.get': 'first',
@@ -16,11 +16,18 @@ exports.create = function (api) {
 
     let book = api.book.obs.struct({ key: id })
     api.book.pull.get(id, dbBook => {
-      // FIXME: subjective
       Object.keys(dbBook.common).forEach((k) => {
         if (dbBook.common[k]) {
           book[k].set(dbBook.common[k])
         }
+      })
+
+      Object.keys(dbBook.subjective).forEach((k) => {
+        var d = {}
+        Object.keys(dbBook.subjective[k]).forEach((v) => {
+          d[v] = Value(dbBook.subjective[k][v])
+        })
+        book.subjective.put(k, Struct(d))
       })
     })
 

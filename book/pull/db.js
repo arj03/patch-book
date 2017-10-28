@@ -61,7 +61,8 @@ exports.create = function (api) {
       common: msg.content.common,
       subjective: {}
     }
-    book.subjective[msg.author] = msg.content.subjective
+    book.subjective[msg.author] = msg.content.subjective ||
+      { rating: '', ratingType: '', review: '', shelve: '', genre: '' }
 
     applyAmends(book, cb)
   }

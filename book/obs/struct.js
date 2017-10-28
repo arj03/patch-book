@@ -1,5 +1,5 @@
 const nest = require('depnest')
-const { Value, Set, Struct, forEachPair } = require('mutant')
+const { Value, Set, Dict, Struct, forEachPair } = require('mutant')
 
 exports.needs = nest({
   'sbot.async.publish': 'first'
@@ -15,7 +15,7 @@ exports.create = function (api) {
       authors: Value(''),
       description: Value(''),
       images: Set([]),
-      subjective: Set([])
+      subjective: Dict()
     })
 
     struct.create = function(cb)

@@ -1,6 +1,5 @@
 const nest = require('depnest')
-const { h, computed } = require('mutant')
-const spacetime = require('spacetime')
+const { h } = require('mutant')
 
 exports.needs = nest({
   'message.html': {
@@ -10,8 +9,6 @@ exports.needs = nest({
     timestamp: 'first'
   },
   'about.html.image': 'first',
-  'about.obs.color': 'first',
-  'blob.sync.url': 'first',
   'book.obs.book': 'first',
   'book.html': {
     description: 'first',
