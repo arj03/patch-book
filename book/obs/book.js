@@ -24,11 +24,20 @@ exports.create = function (api) {
       })
 
       Object.keys(dbBook.subjective).forEach((k) => {
-        var d = {}
-        Object.keys(dbBook.subjective[k]).forEach((v) => {
-          d[v] = Value(dbBook.subjective[k][v])
-        })
-        book.subjective.put(k, Struct(d))
+        if (book.subjective.has(k))
+        {
+          Object.keys(dbBook.subjective[k]).forEach((v) => {
+            book.subjective.get(k)[v].set(dbBook.subjective[k][v])
+          })
+        }
+        else
+        {
+          let d = {}
+          Object.keys(dbBook.subjective[k]).forEach((v) => {
+            d[v] = Value(dbBook.subjective[k][v])
+          })
+          book.subjective.put(k, Struct(d))
+        }
       })
     })
 
