@@ -8,12 +8,41 @@ Message -book-detail {
   }
 
   section.subjective {
-    column-count: 2
+    div {
+      -contracted {
+        display: none
+      }
 
+      -expanded {
+        display: block
+      }
+
+      textarea, input {
+        border: 1px solid gainsboro
+      }
+    }
+    
     section {
-      div {
-        textarea, input {
-          border: 1px solid gainsboro
+      line-height: 2rem
+
+      input {
+        border: 1px solid gainsboro
+      }
+
+      img.Avatar {
+        width: 2rem;
+        height: 2rem;
+        margin-right: 0.5rem
+      }
+
+      span {
+        vertical-align: text-bottom
+
+        img.emoji {
+          height: 1.2em;
+          width: 1.2em;
+          vertical-align: middle;
+          margin-top: -0.2em;
         }
       }
     }

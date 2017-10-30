@@ -1,9 +1,12 @@
 const nest = require('depnest')
 const { h, when, computed } = require('mutant')
+var htmlEscape = require('html-escape')
 
 exports.needs = nest({
   'book.obs.book': 'first',
   'about.html.image': 'first',
+  'about.obs.name': 'first',
+  'emoji.sync.url': 'first',
   'message.html': {
     'markdown': 'first'
   },
@@ -20,11 +23,39 @@ exports.gives = nest('book.html.layout')
 exports.create = (api) => {
   return nest('book.html.layout', bookLayout)
 
+  function renderEmoji (emoji, url) {
+    if (!url) return ':' + emoji + ':'
+    return `
+      <img
+        src="${htmlEscape(url)}"
+        alt=":${htmlEscape(emoji)}:"
+        title=":${htmlEscape(emoji)}:"
+        class="emoji"
+      >
+    `
+  }
+
+  function simpleMarkdown(text) {
+    if (text.startsWith(':'))
+      return renderEmoji(text, api.emoji.sync.url(text.match(/:([^:]*)/)[1]))
+    else
+      return text
+  }
+  
+  function valueEdit(isEditing, value) {
+    return when(isEditing,
+                h('input', {'ev-input': e => value.set(e.target.value), value: value() }),
+                h('span', { innerHTML: computed(value, simpleMarkdown) }))
+
+  }
+
   function simpleEdit(isEditing, name, value) {
-    return h('div', [h('span', name),
-                     when(isEditing,
-                          h('input', {'ev-input': e => value.set(e.target.value), value: value() }),
-                          h('span', value))])
+    return h('div', { classList: when(computed([value, isEditing], (v, e) => { return v || e }),
+                                      '-expanded', '-contracted') },
+             [h('span', name),
+              when(isEditing,
+                   h('input', {'ev-input': e => value.set(e.target.value), value: value() }),
+                   h('span', value))])
 
   }
 
@@ -32,8 +63,10 @@ exports.create = (api) => {
     const markdown = api.message.html.markdown
     const input = h('textarea', {'ev-input': e => value.set(e.target.value), value: value() })
 
-    return h('div', [h('span', name),
-                     when(isEditing, input, computed(value, markdown))])
+    return h('div', { classList: when(computed([value, isEditing], (v, e) => { return v || e }),
+                                      '-expanded', '-contracted') },
+             [h('span', name),
+              when(isEditing, input, computed(value, markdown))])
   }
 
   function bookLayout (msg, opts) {
@@ -60,14 +93,13 @@ exports.create = (api) => {
             if (i++ < reviews.length) return
             let subjective = obs.subjective.get(user)
             reviews.push([
-              h('section.avatar', {}, api.about.html.image(user)),
-              h('section', [
-                textEdit(isEditing, 'Review', subjective.review),
-                simpleEdit(isEditing, 'Rating', subjective.rating),
-                simpleEdit(isEditing, 'Rating type', subjective.ratingType),
-                simpleEdit(isEditing, 'Shelve', subjective.shelve),
-                simpleEdit(isEditing, 'Genre', subjective.genre)
-              ])
+              h('section', [api.about.html.image(user),
+                            h('span', [api.about.obs.name(msg.value.author), ' rated ']),
+                            valueEdit(isEditing, subjective.rating),
+                            valueEdit(isEditing, subjective.ratingType)]),
+              simpleEdit(isEditing, 'Shelve', subjective.shelve),
+              simpleEdit(isEditing, 'Genre', subjective.genre),
+              textEdit(isEditing, 'Review', subjective.review)
             ])
           })
 
