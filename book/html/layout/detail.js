@@ -44,7 +44,7 @@ exports.create = (api) => {
   
   function valueEdit(isEditing, value) {
     return when(isEditing,
-                h('input', {'ev-input': e => value.set(e.target.value), value: value() }),
+                h('input', {'ev-input': e => value.set(e.target.value), value: value }),
                 h('span', { innerHTML: computed(value, simpleMarkdown) }))
 
   }
@@ -52,9 +52,9 @@ exports.create = (api) => {
   function simpleEdit(isEditing, name, value) {
     return h('div', { classList: when(computed([value, isEditing], (v, e) => { return v || e }),
                                       '-expanded', '-contracted') },
-             [h('span', name),
+             [h('span', name + ':'),
               when(isEditing,
-                   h('input', {'ev-input': e => value.set(e.target.value), value: value() }),
+                   h('input', {'ev-input': e => value.set(e.target.value), value: value }),
                    h('span', value))])
 
   }
@@ -65,7 +65,7 @@ exports.create = (api) => {
 
     return h('div', { classList: when(computed([value, isEditing], (v, e) => { return v || e }),
                                       '-expanded', '-contracted') },
-             [h('span', name),
+             [h('div', name + ':'),
               when(isEditing, input, computed(value, markdown))])
   }
 
