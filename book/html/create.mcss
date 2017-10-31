@@ -5,8 +5,9 @@ Create -book {
   }
 
   section.content textarea {
-    margin-left: 5px
     border: 1px solid gainsboro
+    width: 600px
+    height: 250px
   }
 
   -contracted {

@@ -25,14 +25,14 @@ exports.create = function (api) {
     return h('Create -book',
              { classList: when(showCreate, '-expanded', '-contracted') }, [
       h('section.content', [
-        h('div.title', [h('label', 'Title'),
+        h('div.title', [h('label', 'Title:'),
                         h('input', {'ev-input': e => book.title.set(e.target.value),
                                     value: '' })]),
-        images({images: book.images, isEditing: true, onUpdate: book.images.add }),
-        h('div.authors', [h('label', 'Authors'),
+        h('div.authors', [h('label', 'Authors:'),
                           h('input', {'ev-input': e => book.authors.set(e.target.value),
                                       value: '' })]),
-        h('div.description', [h('label', 'Description'),
+        images({images: book.images, isEditing: true, onUpdate: book.images.add }),
+        h('div.description', [h('div', 'Description:'),
                               h('textarea', {'ev-input': e => book.description.set(e.target.value),
                                              value: '' }) ])
       ]),
