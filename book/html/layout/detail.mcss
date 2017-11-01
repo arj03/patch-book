@@ -24,7 +24,7 @@ Message -book-detail {
       textarea {
         border: 1px solid gainsboro
         width: 600px
-        height: 300px
+        height: 250px
       }
     }
     

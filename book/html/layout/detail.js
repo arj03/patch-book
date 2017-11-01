@@ -1,5 +1,5 @@
 const nest = require('depnest')
-const { h, when, computed } = require('mutant')
+const { h, when, computed, Value } = require('mutant')
 var htmlEscape = require('html-escape')
 
 exports.needs = nest({
@@ -76,15 +76,21 @@ exports.create = (api) => {
 
     const { title, authors, description, images } = api.book.html
 
+    let isEditingSubjective = Value(false)
     let reviews = []
 
-    return h('Message -book-detail', [
+    return [h('Message -book-detail', [
       title({ title: obs.title, msg, isEditing, onUpdate: obs.title.set }),
       authors({authors: obs.authors, isEditing, onUpdate: obs.authors.set}),
       h('section.content', [
         images({images: obs.images, isEditing, onUpdate: obs.images.add }),
         h('section.description',
           description({description: obs.description, isEditing, onUpdate: obs.description.set})),
+      ]),
+      h('section.actions', [
+        h('button.edit', { 'ev-click': () => isEditing.set(!isEditing()) },
+          when(isEditing, 'Cancel', 'Edit book')),
+        when(isEditing, h('button', {'ev-click': () => saveBook(obs)}, 'Update book'))
       ]),
       h('section.subjective', [
         computed(obs.subjective, subjectives => {
@@ -95,11 +101,11 @@ exports.create = (api) => {
             reviews.push([
               h('section', [api.about.html.image(user),
                             h('span', [api.about.obs.name(msg.value.author), ' rated ']),
-                            valueEdit(isEditing, subjective.rating),
-                            valueEdit(isEditing, subjective.ratingType)]),
-              simpleEdit(isEditing, 'Shelve', subjective.shelve),
-              simpleEdit(isEditing, 'Genre', subjective.genre),
-              textEdit(isEditing, 'Review', subjective.review)
+                            valueEdit(isEditingSubjective, subjective.rating),
+                            valueEdit(isEditingSubjective, subjective.ratingType)]),
+              simpleEdit(isEditingSubjective, 'Shelve', subjective.shelve),
+              simpleEdit(isEditingSubjective, 'Genre', subjective.genre),
+              textEdit(isEditingSubjective, 'Review', subjective.review)
             ])
           })
 
@@ -107,17 +113,22 @@ exports.create = (api) => {
         })
       ]),
       h('section.actions', [
-        h('button.edit', { 'ev-click': () => isEditing.set(!isEditing()) },
-          when(isEditing, 'Cancel', 'Edit')),
-        when(isEditing, h('button', {'ev-click': () => save(obs)}, 'Update'))
-      ])
-    ])
+        h('button.subjective', { 'ev-click': () => isEditingSubjective.set(!isEditingSubjective()) },
+          when(isEditingSubjective, 'Cancel', 'Edit rating')),
+        when(isEditingSubjective, h('button', { 'ev-click': () => saveSubjective(obs) }, 'Update rating'))
+      ]),
+    ])]
 
-    function save (obs) {
-      // FIXME: check if anything changed
+    function saveBook(obs) {
       obs.amend()
 
       isEditing.set(false)
+    }
+
+    function saveSubjective(obs) {
+      obs.updateSubjective()
+
+      isEditingSubjective.set(false)
     }
   }
 }

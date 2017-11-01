@@ -22,17 +22,17 @@ exports.create = function (api) {
     {
       let s = struct()
 
-      let commonObj = {
+      let message = {
+        type: 'bookclub',
         title: s.title,
         authors: s.authors,
-        description: s.description,
-        images: s.images
+        description: s.description
       }
-      let subjectiveObj = null
 
-      api.sbot.async.publish({ type: 'bookclub',
-                               common: commonObj,
-                               subjective: subjectiveObj }, cb)
+      if (s.images.length > 0)
+        message.image = s.images[0]
+
+      api.sbot.async.publish(message, cb)
     }
 
     return struct

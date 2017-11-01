@@ -29,11 +29,6 @@ Initial rough version to test idea.
 
 SameAs (for merging multiple books) might be needed, but can be added later.
 
-## TODO
-
-- Fix books list
-- Add subjective
-
 ## Methods
 
 - Posting

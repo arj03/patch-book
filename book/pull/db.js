@@ -43,26 +43,32 @@ exports.create = function (api) {
         api.sbot.async.get(data.key, cb)
       }),
       pull.drain(msg => {
-        if (msg.content.type !== "bookclub-update") return
-
-        book.common = Object.assign(book.common, msg.content.common)
-        book.subjective[msg.author] = Object.assign(book.subjective[msg.author] || {},
-                                                    msg.content.subjective)
-
+        if (msg.content.type == "about") {
+          book.common = Object.assign(book.common, msg.content)
+        } else if (msg.content.type == "bookclub-subjective") {
+          book.subjective[msg.author]= {
+            rating: msg.content.rating,
+            ratingType: msg.content.ratingType,
+            shelve: msg.content.shelve,
+            genre: msg.content.genre,
+            review: msg.content.review
+          }
+        }
         cb(book)
       })
     )
   }
-  
+
   function hydrate(msg, key, cb)
   {
     var book = {
       key: key,
-      common: msg.content.common,
+      common: msg.content,
       subjective: {}
     }
-    book.subjective[msg.author] = msg.content.subjective ||
-      { rating: '', ratingType: '', review: '', shelve: '', genre: '' }
+    book.subjective[msg.author] = { rating: '', ratingType: '', review: '', shelve: '', genre: '' }
+
+    cb(book)
 
     applyAmends(book, cb)
   }
