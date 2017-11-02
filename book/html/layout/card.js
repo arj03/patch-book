@@ -1,5 +1,5 @@
 const nest = require('depnest')
-const { h } = require('mutant')
+const { h, Value } = require('mutant')
 
 exports.needs = nest({
   'message.html': {
@@ -49,11 +49,14 @@ exports.create = (api) => {
       ])
     ]
 
+    let rawMessage = Value(null)
+
     return h('Message -book-card', [
       h('section.avatar', {}, api.about.html.image(msg.value.author)),
       h('section.timestamp', {}, timestamp(msg)),
-      h('section.meta', {}, meta(msg)),
+      h('section.meta', {}, meta(msg, { rawMessage })),
       h('section.content', {}, content),
+      h('section.raw-content', rawMessage),
       h('section.actions', {}, action(msg)),
       h('footer.backlinks', {}, backlinks(msg))
     ])
