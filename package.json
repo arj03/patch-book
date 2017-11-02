@@ -1,7 +1,7 @@
 {
   "name": "patch-book",
   "version": "1.0.0",
-  "description": "A book rating system for patch-core compatible scuttlebut clients",
+  "description": "A book rating system for patch-core compatible scuttlebutt clients",
   "main": "index.js",
   "directories": {
     "test": "test"
@@ -13,7 +13,7 @@
     "type": "git",
     "url": "ssb://%zoL1riX2mELF0j3dydWtQ+go4nI4jaByvm5Z02cRyaQ=.sha256"
   },
-  "author": "arj",
+  "author": "Anders Rune Jensen <arj03@protonmail.ch>",
   "license": "AGPL-3.0",
   "dependencies": {
     "bulk-require": "^1.0.1",
