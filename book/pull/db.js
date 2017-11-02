@@ -29,7 +29,8 @@ exports.create = function (api) {
   
   function getAll() {
     return pull(
-      api.sbot.pull.messagesByType({ type: 'bookclub', fillCache: true, keys: true, reverse: true })
+      api.sbot.pull.messagesByType({ type: 'bookclub', fillCache: true,
+                                     keys: true, reverse: true })
     )
   }
 
@@ -56,7 +57,7 @@ exports.create = function (api) {
             }
           } else
             book.common = Object.assign(book.common, msg.content)
-        } else if (msg.content.type == "bookclub-subjective") {
+        } else if (msg.content.type == "bookclub-subjective") { // backwards compatability
           book.subjective[msg.author]= {
             rating: msg.content.rating,
             ratingType: msg.content.ratingType,
