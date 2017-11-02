@@ -1,0 +1,18 @@
+{
+  "name": "patch-book",
+  "version": "1.0.0",
+  "description": "A book rating system for patch-core compatible scuttlebut clients",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "ssb://%zoL1riX2mELF0j3dydWtQ+go4nI4jaByvm5Z02cRyaQ=.sha256"
+  },
+  "author": "arj",
+  "license": "AGPL-3.0"
+}
