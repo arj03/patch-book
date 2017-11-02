@@ -62,7 +62,7 @@ exports.create = function (api) {
     {
       let s = book()
 
-      let msg = { type: 'bookclub-subjective', root: id }
+      let msg = { type: 'about', root: id }
       msg = Object.assign(msg, s.subjective[api.keys.sync.id()])
 
       api.sbot.async.publish(msg, cb)

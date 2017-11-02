@@ -44,7 +44,18 @@ exports.create = function (api) {
       }),
       pull.drain(msg => {
         if (msg.content.type == "about") {
-          book.common = Object.assign(book.common, msg.content)
+          // FIXME: refactor this
+          if (msg.content.rating || msg.content.ratingType || msg.content.shelve ||
+              msg.content.genre || msg.content.review) {
+            book.subjective[msg.author]= {
+              rating: msg.content.rating,
+              ratingType: msg.content.ratingType,
+              shelve: msg.content.shelve,
+              genre: msg.content.genre,
+              review: msg.content.review
+            }
+          } else
+            book.common = Object.assign(book.common, msg.content)
         } else if (msg.content.type == "bookclub-subjective") {
           book.subjective[msg.author]= {
             rating: msg.content.rating,
