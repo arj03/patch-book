@@ -29,7 +29,7 @@ exports.create = function (api) {
   
   function getAll() {
     return pull(
-      api.sbot.pull.messagesByType({ type: 'bookclub', fillCache: true, keys: true })
+      api.sbot.pull.messagesByType({ type: 'bookclub', fillCache: true, keys: true, reverse: true })
     )
   }
 
