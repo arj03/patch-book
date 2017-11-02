@@ -14,7 +14,7 @@
     "url": "ssb://%zoL1riX2mELF0j3dydWtQ+go4nI4jaByvm5Z02cRyaQ=.sha256"
   },
   "author": "Anders Rune Jensen <arj03@protonmail.ch>",
-  "license": "AGPL-3.0",
+  "license": "Beerware",
   "dependencies": {
     "bulk-require": "^1.0.1",
     "depnest": "^1.3.0",
