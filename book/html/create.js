@@ -32,7 +32,7 @@ exports.create = function (api) {
                           h('input', {'ev-input': e => book.authors.set(e.target.value),
                                       value: '' })]),
         images({images: book.images, isEditing: true, onUpdate: book.images.add }),
-        h('div.description', [h('div', 'Description:'),
+        h('div.description', [h('div', 'Synopsis:'),
                               h('textarea', {'ev-input': e => book.description.set(e.target.value),
                                              value: '' }) ])
       ]),

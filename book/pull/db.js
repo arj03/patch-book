@@ -8,7 +8,8 @@ exports.gives = nest({
 exports.needs = nest({
   'sbot.pull.messagesByType': 'first',
   'sbot.pull.links': 'first',
-  'sbot.async.get': 'first'
+  'sbot.async.get': 'first',
+  'keys.sync.id': 'first'
 })
 
 exports.create = function (api) {
@@ -48,7 +49,7 @@ exports.create = function (api) {
           // FIXME: refactor this
           if (msg.content.rating || msg.content.ratingType || msg.content.shelve ||
               msg.content.genre || msg.content.review) {
-            book.subjective[msg.author]= {
+            book.subjective[msg.author] = {
               rating: msg.content.rating,
               ratingType: msg.content.ratingType,
               shelve: msg.content.shelve,
@@ -58,7 +59,7 @@ exports.create = function (api) {
           } else
             book.common = Object.assign(book.common, msg.content)
         } else if (msg.content.type == "bookclub-subjective") { // backwards compatability
-          book.subjective[msg.author]= {
+          book.subjective[msg.author] = {
             rating: msg.content.rating,
             ratingType: msg.content.ratingType,
             shelve: msg.content.shelve,
@@ -78,7 +79,7 @@ exports.create = function (api) {
       common: msg.content,
       subjective: {}
     }
-    book.subjective[msg.author] = { rating: '', ratingType: '', review: '', shelve: '', genre: '' }
+    book.subjective[api.keys.sync.id()] = { rating: '', ratingType: '', review: '', shelve: '', genre: '' }
 
     cb(book)
 

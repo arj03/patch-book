@@ -6,6 +6,7 @@ exports.needs = nest({
   'book.obs.book': 'first',
   'about.html.image': 'first',
   'about.obs.name': 'first',
+  'keys.sync.id': 'first',
   'emoji.sync.url': 'first',
   'message.html': {
     'markdown': 'first'
@@ -61,7 +62,7 @@ exports.create = (api) => {
 
   function textEdit(isEditing, name, value) {
     const markdown = api.message.html.markdown
-    const input = h('textarea', {'ev-input': e => value.set(e.target.value), value: value() })
+    const input = h('textarea', {'ev-input': e => value.set(e.target.value), value: value })
 
     return h('div', { classList: when(computed([value, isEditing], (v, e) => { return v || e }),
                                       '-expanded', '-contracted') },
@@ -98,14 +99,19 @@ exports.create = (api) => {
           Object.keys(subjectives).forEach(user => {
             if (i++ < reviews.length) return
             let subjective = obs.subjective.get(user)
+            let isMe = Value(api.keys.sync.id() == user)
+            let isOwnEditingSubj = computed([isEditingSubjective, isMe],
+                                            (e, me) => { return e && me })
             reviews.push([
               h('section', [api.about.html.image(user),
-                            h('span', [api.about.obs.name(msg.value.author), ' rated ']),
-                            valueEdit(isEditingSubjective, subjective.rating),
-                            valueEdit(isEditingSubjective, subjective.ratingType)]),
-              simpleEdit(isEditingSubjective, 'Shelve', subjective.shelve),
-              simpleEdit(isEditingSubjective, 'Genre', subjective.genre),
-              textEdit(isEditingSubjective, 'Review', subjective.review)
+                            when(computed([subjective.rating, isEditingSubjective],
+                                          (v, e) => { return v || e }),
+                                 h('span', [api.about.obs.name(user), ' rated '])),
+                            valueEdit(isOwnEditingSubj, subjective.rating),
+                            valueEdit(isOwnEditingSubj, subjective.ratingType)]),
+              simpleEdit(isOwnEditingSubj, 'Shelve', subjective.shelve),
+              simpleEdit(isOwnEditingSubj, 'Genre', subjective.genre),
+              textEdit(isOwnEditingSubj, 'Review', subjective.review)
             ])
           })
 
