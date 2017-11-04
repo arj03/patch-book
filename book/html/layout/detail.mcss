@@ -4,7 +4,14 @@ Message -book-detail {
   section.title, section.authors {
     input {
       border: 1px solid gainsboro
+      height: 1.3rem
+      padding: 5px
     }
+  }
+
+  section.title input {
+      height: 2rem
+      margin-bottom: 5px
   }
 
   section.subjective {
@@ -19,6 +26,10 @@ Message -book-detail {
 
       input {
         border: 1px solid gainsboro
+        height: 1.3rem
+        margin-left: 5px
+        margin-bottom: 5px
+        padding: 5px
       }
 
       textarea {
@@ -29,11 +40,16 @@ Message -book-detail {
     }
     
     section {
+      margin-top: 5px
       line-height: 2rem
 
-      input {
+      input, span.ratingType input {
         border: 1px solid gainsboro
-        width: 75px
+        width: 80px
+        height: 1.3rem
+        margin-left: 5px
+        padding: 5px
+        vertical-align: text-bottom
       }
 
       img.Avatar {
@@ -42,7 +58,7 @@ Message -book-detail {
         margin-right: 0.5rem
       }
 
-      span {
+      span.text {
         vertical-align: text-bottom
 
         img.emoji {

@@ -1,12 +1,14 @@
 const nest = require('depnest')
 const { h, when, computed, Value } = require('mutant')
 var htmlEscape = require('html-escape')
+const addSuggest = require('suggest-box')
 
 exports.needs = nest({
   'book.obs.book': 'first',
   'about.html.image': 'first',
   'about.obs.name': 'first',
   'keys.sync.id': 'first',
+  'emoji.async.suggest': 'first',
   'emoji.sync.url': 'first',
   'message.html': {
     'markdown': 'first'
@@ -43,11 +45,29 @@ exports.create = (api) => {
       return text
   }
   
-  function valueEdit(isEditing, value) {
+  function ratingEdit(isEditing, value) {
     return when(isEditing,
-                h('input', {'ev-input': e => value.set(e.target.value), value: value }),
-                h('span', { innerHTML: computed(value, simpleMarkdown) }))
+                h('input', {'ev-input': e => value.set(e.target.value), value: value,
+                            placeholder: 'your rating' }),
+                h('span.text', { innerHTML: computed(value, simpleMarkdown) }))
+  }
 
+  function ratingTypeEdit(isEditing, value) {
+    let getEmojiSuggestions = api.emoji.async.suggest()
+
+    let ratingTypeInput = h('input', {'ev-input': e => value.set(e.target.value),
+                                      value: value, placeholder: 'rating type' })
+
+    let suggestWrapper = h('span.ratingType', ratingTypeInput)
+
+    addSuggest(ratingTypeInput, (inputText, cb) => {
+      if (inputText[0] === ':') {
+        cb(null, getEmojiSuggestions(inputText.slice(1)))
+      }
+    }, {cls: 'PatchSuggest'})
+
+    return when(isEditing, suggestWrapper,
+                h('span.text', { innerHTML: computed(value, simpleMarkdown) }))
   }
 
   function simpleEdit(isEditing, name, value) {
@@ -106,9 +126,9 @@ exports.create = (api) => {
               h('section', [api.about.html.image(user),
                             when(computed([subjective.rating, isEditingSubjective],
                                           (v, e) => { return v || e }),
-                                 h('span', [api.about.obs.name(user), ' rated '])),
-                            valueEdit(isOwnEditingSubj, subjective.rating),
-                            valueEdit(isOwnEditingSubj, subjective.ratingType)]),
+                                 h('span.text', [api.about.obs.name(user), ' rated '])),
+                            ratingEdit(isOwnEditingSubj, subjective.rating),
+                            ratingTypeEdit(isOwnEditingSubj, subjective.ratingType)]),
               simpleEdit(isOwnEditingSubj, 'Shelve', subjective.shelve),
               simpleEdit(isOwnEditingSubj, 'Genre', subjective.genre),
               textEdit(isOwnEditingSubj, 'Review', subjective.review)
