@@ -44,7 +44,7 @@ exports.create = function (api) {
 
     book.amend = function(cb)
     {
-      let msg = { type: 'about', root: id }
+      let msg = { type: 'about', about: id }
 
       let s = book()
 
@@ -62,7 +62,7 @@ exports.create = function (api) {
     {
       let s = book()
 
-      let msg = { type: 'about', root: id }
+      let msg = { type: 'about', about: id }
       msg = Object.assign(msg, s.subjective[api.keys.sync.id()])
 
       api.sbot.async.publish(msg, cb)
