@@ -22,7 +22,7 @@ exports.create = function (api) {
       book.description.set(dbBook.common.description)
 
       if (dbBook.common.image)
-        book.images.add(dbBook.common.image) // https://github.com/mmckegg/mutant/issues/20
+        book.images.add(dbBook.common.image)
 
       Object.keys(dbBook.subjective).forEach((k) => {
         if (book.subjective.has(k))
