@@ -37,28 +37,16 @@ exports.create = function (api) {
 
   // internal
 
-  function applyAmends(book, cb) {
+  function applyAmendsAbout(book, cb) {
     pull(
-      api.sbot.pull.links({ dest: book.key, live: true }),
+      api.sbot.pull.links({ dest: book.key, rel: 'about', live: true }),
       pull.filter(data => data.key),
       pull.asyncMap((data, cb) => {
         api.sbot.async.get(data.key, cb)
       }),
       pull.drain(msg => {
-        if (msg.content.type == "about") {
-          // FIXME: refactor this
-          if (msg.content.rating || msg.content.ratingType || msg.content.shelve ||
-              msg.content.genre || msg.content.review) {
-            book.subjective[msg.author] = {
-              rating: msg.content.rating,
-              ratingType: msg.content.ratingType,
-              shelve: msg.content.shelve,
-              genre: msg.content.genre,
-              review: msg.content.review
-            }
-          } else
-            book.common = Object.assign(book.common, msg.content)
-        } else if (msg.content.type == "bookclub-subjective") { // backwards compatability
+        if (msg.content.rating || msg.content.ratingType || msg.content.shelve ||
+            msg.content.genre || msg.content.review) {
           book.subjective[msg.author] = {
             rating: msg.content.rating,
             ratingType: msg.content.ratingType,
@@ -66,8 +54,49 @@ exports.create = function (api) {
             genre: msg.content.genre,
             review: msg.content.review
           }
-        }
+        } else
+          book.common = Object.assign(book.common, msg.content)
+
         cb(book)
+      })
+    )
+
+    cb(book)
+  }
+
+  function applyAmends(book, cb) { // FIXME: deprecate this
+    pull(
+      api.sbot.pull.links({ dest: book.key, rel: 'root' }),
+      pull.filter(data => data.key),
+      pull.asyncMap((data, cb) => {
+        api.sbot.async.get(data.key, cb)
+      }),
+      pull.collect((err, messages) => {
+        messages.map((msg) => {         
+          if (msg.content.type == "about") {
+            if (msg.content.rating || msg.content.ratingType || msg.content.shelve ||
+                msg.content.genre || msg.content.review) {
+              book.subjective[msg.author] = {
+                rating: msg.content.rating,
+                ratingType: msg.content.ratingType,
+                shelve: msg.content.shelve,
+                genre: msg.content.genre,
+                review: msg.content.review
+              }
+            } else
+              book.common = Object.assign(book.common, msg.content)
+          } else if (msg.content.type == "bookclub-subjective") { // backwards compatability
+            book.subjective[msg.author] = {
+              rating: msg.content.rating,
+              ratingType: msg.content.ratingType,
+              shelve: msg.content.shelve,
+              genre: msg.content.genre,
+              review: msg.content.review
+            }
+          }
+        })
+
+        applyAmendsAbout(book, cb)
       })
     )
   }
