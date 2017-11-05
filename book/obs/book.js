@@ -24,20 +24,20 @@ exports.create = function (api) {
       if (dbBook.common.image)
         book.images.add(dbBook.common.image)
 
-      Object.keys(dbBook.subjective).forEach((k) => {
-        if (book.subjective.has(k))
+      Object.keys(dbBook.subjective).forEach((user) => {
+        if (book.subjective.has(user))
         {
-          Object.keys(dbBook.subjective[k]).forEach((v) => {
-            book.subjective.get(k)[v].set(dbBook.subjective[k][v])
+          Object.keys(dbBook.subjective[user]).forEach((v) => {
+            book.subjective.get(user)[v].set(dbBook.subjective[user][v])
           })
         }
         else
         {
-          let d = {}
-          Object.keys(dbBook.subjective[k]).forEach((v) => {
-            d[v] = Value(dbBook.subjective[k][v])
+          let values = {}
+          Object.keys(dbBook.subjective[user]).forEach((v) => {
+            values[v] = Value(dbBook.subjective[user][v])
           })
-          book.subjective.put(k, Struct(d))
+          book.subjective.put(user, Struct(values))
         }
       })
     })
@@ -46,24 +46,24 @@ exports.create = function (api) {
     {
       let msg = { type: 'about', about: id }
 
-      let s = book()
+      let b = book()
 
-      msg.title = s.title
-      msg.authors = s.authors
-      msg.description = s.description
+      msg.title = b.title
+      msg.authors = b.authors
+      msg.description = b.description
 
-      if (s.images.length > 0)
-        msg.image = s.images[0]
+      if (b.images.length > 0)
+        msg.image = b.images[0]
 
       api.sbot.async.publish(msg, cb)
     }
 
     book.updateSubjective = function(cb)
     {
-      let s = book()
+      let b = book()
 
       let msg = { type: 'about', about: id }
-      msg = Object.assign(msg, s.subjective[api.keys.sync.id()])
+      msg = Object.assign(msg, b.subjective[api.keys.sync.id()])
 
       api.sbot.async.publish(msg, cb)
     }

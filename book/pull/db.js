@@ -62,8 +62,6 @@ exports.create = function (api) {
         cb(book)
       })
     )
-
-    cb(book)
   }
 
   function hydrate(msg, key, cb)
@@ -73,7 +71,10 @@ exports.create = function (api) {
       common: msg.content,
       subjective: {}
     }
-    book.subjective[api.keys.sync.id()] = { rating: '', ratingType: '', review: '', shelve: '', genre: '' }
+
+    book.subjective[api.keys.sync.id()] = {
+      rating: '', ratingType: '', review: '', shelve: '', genre: ''
+    }
 
     cb(book)
 

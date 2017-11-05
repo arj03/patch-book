@@ -1,5 +1,5 @@
 const nest = require('depnest')
-const { Value, Set, Dict, Struct, forEachPair } = require('mutant')
+const { Value, Set, Dict, Struct } = require('mutant')
 const eq = require('deep-equal')
 
 exports.needs = nest({
