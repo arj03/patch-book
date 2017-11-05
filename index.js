@@ -6,7 +6,4 @@ const modules = bulk(__dirname, ['!(node_modules|test|util)/**/*.js'], {
   }
 })
 
-module.exports = Object.assign({},
-  { 'patchbook': modules }
-)
-
+module.exports = modules
