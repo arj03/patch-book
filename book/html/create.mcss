@@ -1,7 +1,9 @@
 Create -book {
   section.content input {
-    margin-left: 5px
     border: 1px solid gainsboro
+    margin-left: 5px
+    margin-bottom: 5px
+    padding: 5px
   }
 
   section.content textarea {
