@@ -47,9 +47,13 @@ exports.create = (api) => {
   
   function ratingEdit(isEditing, value) {
     return when(isEditing,
-                h('input', {'ev-input': e => value.set(e.target.value), value: value,
-                            placeholder: 'your rating' }),
-                h('span.text', { innerHTML: computed(value, simpleMarkdown) }))
+      h('input', {
+        'ev-input': e => value.set(e.target.value),
+        value,
+        placeholder: 'your rating'  // REVIEW - I spread the keys over several lines to make this easier to read
+      }),
+      h('span.text', { innerHTML: computed(value, simpleMarkdown) })
+    )
   }
 
   function ratingTypeEdit(isEditing, value) {
@@ -71,23 +75,38 @@ exports.create = (api) => {
   }
 
   function simpleEdit(isEditing, name, value) {
-    return h('div', { classList: when(computed([value, isEditing], (v, e) => { return v || e }),
-                                      '-expanded', '-contracted') },
-             [h('span', name + ':'),
-              when(isEditing,
-                   h('input', {'ev-input': e => value.set(e.target.value), value: value }),
-                   h('span', value))])
+    // REVIEW - I split out logic into new lines when it's muddying the html areas
+    // REVIEW - don't use when + computed (when is just like a special sort of computed... jus use computed and role your own
+    const classList = computed([value, isEditing], (v, e) => { 
+      return v || e 
+        ? '-expanded'
+        : '-contracted'
+    })
 
+    return h('div', { classList }, [
+      h('span', name + ':'),
+      when(isEditing,
+        h('input', {'ev-input': e => value.set(e.target.value), value }),
+        h('span', value)
+      )
+    ])
   }
 
   function textEdit(isEditing, name, value) {
-    const markdown = api.message.html.markdown
-    const input = h('textarea', {'ev-input': e => value.set(e.target.value), value: value })
+    const classList = computed([value, isEditing], (v, e) => { 
+      return v || e 
+        ? '-expanded'
+        : '-contracted'
+    })
 
-    return h('div', { classList: when(computed([value, isEditing], (v, e) => { return v || e }),
-                                      '-expanded', '-contracted') },
-             [h('div', name + ':'),
-              when(isEditing, input, computed(value, markdown))])
+    return h('div', { classList }, [
+      h('div', name + ':'),
+      when(isEditing, 
+        h('textarea', {'ev-input': e => value.set(e.target.value), value }),
+        computed(value, api.message.html.markdown)
+      )
+    ])
+    // REVIEW - refactored this to follow same pattern as function above
   }
 
   function bookLayout (msg, opts) {
@@ -123,6 +142,7 @@ exports.create = (api) => {
             let isOwnEditingSubj = computed([isEditingSubjective, isMe],
                                             (e, me) => { return e && me })
             reviews.push([
+              // REVIEW - this section is hard to read, I'd get rid of the when computed and change in indenting (but that could be my personal taste)
               h('section', [api.about.html.image(user),
                             when(computed([subjective.rating, isEditingSubjective],
                                           (v, e) => { return v || e }),

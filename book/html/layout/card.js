@@ -26,7 +26,7 @@ exports.create = (api) => {
   function bookLayout (msg, opts) {
     const { layout, obs, isCard } = opts
 
-    if (!(layout === undefined || layout === 'card')) return
+    if (layout !== undefined && layout !== 'card') return
 
     const { timestamp, meta, backlinks, action } = api.message.html
 
