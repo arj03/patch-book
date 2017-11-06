@@ -66,6 +66,10 @@ exports.create = (api) => {
       }
     }, {cls: 'PatchSuggest'})
 
+    ratingTypeInput.addEventListener('suggestselect', ev => {
+      value.set(ev.detail.value)
+    })
+
     return when(isEditing, suggestWrapper,
                 h('span.text', { innerHTML: computed(value, simpleMarkdown) }))
   }
@@ -98,6 +102,8 @@ exports.create = (api) => {
     const { title, authors, description, images } = api.book.html
 
     let isEditingSubjective = Value(false)
+    let originalSubjective = {}
+    let originalBook = {}
     let reviews = []
 
     return [h('Message -book-detail', [
@@ -109,7 +115,16 @@ exports.create = (api) => {
           description({description: obs.description, isEditing, onUpdate: obs.description.set})),
       ]),
       h('section.actions', [
-        h('button.edit', { 'ev-click': () => isEditing.set(!isEditing()) },
+        h('button.edit', { 'ev-click': () => {
+          if (isEditing()) { // cancel
+            Object.keys(originalBook).forEach((v) => {
+              obs[v].set(originalBook[v])
+            })
+          } else
+            originalBook = JSON.parse(JSON.stringify(obs()))
+
+          isEditing.set(!isEditing())
+        } },
           when(isEditing, 'Cancel', 'Edit book')),
         when(isEditing, h('button', {'ev-click': () => saveBook(obs)}, 'Update book'))
       ]),
@@ -139,7 +154,19 @@ exports.create = (api) => {
         })
       ]),
       h('section.actions', [
-        h('button.subjective', { 'ev-click': () => isEditingSubjective.set(!isEditingSubjective()) },
+        h('button.subjective', {
+          'ev-click': () => {
+            if (isEditingSubjective()) { // cancel
+              let subj = obs.subjective.get(api.keys.sync.id())
+              Object.keys(originalSubjective).forEach((v) => {
+                subj[v].set(originalSubjective[v])
+              })
+            } else
+              originalSubjective = JSON.parse(JSON.stringify(obs.subjective.get(api.keys.sync.id())()))
+
+            isEditingSubjective.set(!isEditingSubjective())
+          }
+        },
           when(isEditingSubjective, 'Cancel', 'Edit rating')),
         when(isEditingSubjective, h('button', { 'ev-click': () => saveSubjective(obs) }, 'Update rating'))
       ]),
