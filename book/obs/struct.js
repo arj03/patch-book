@@ -1,6 +1,5 @@
 const nest = require('depnest')
 const { Value, Set, Dict, Struct } = require('mutant')
-const eq = require('deep-equal')
 
 exports.needs = nest({
   'sbot.async.publish': 'first'
@@ -15,7 +14,7 @@ exports.create = function (api) {
       title: Value(''),
       authors: Value(''),
       description: Value(''),
-      images: Set([], { comparer: eq }),
+      images: Set([]),
       subjective: Dict()
     })
 

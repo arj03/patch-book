@@ -1,6 +1,7 @@
 const nest = require('depnest')
 const ref = require('ssb-ref')
 const { Value, Struct, Dict } =  require('mutant')
+const deepEq = require('deep-equal')
 
 exports.needs = nest({
   'book.pull.get': 'first',
@@ -21,7 +22,10 @@ exports.create = function (api) {
       book.authors.set(dbBook.common.authors)
       book.description.set(dbBook.common.description)
 
-      if (dbBook.common.image)
+      const { image } = dbBook.common
+
+      // workaround for https://github.com/mmckegg/mutant/issues/20
+      if (image && !book.images().some(i => deepEq(i, image)))
         book.images.add(dbBook.common.image)
 
       Object.keys(dbBook.subjective).forEach((user) => {
