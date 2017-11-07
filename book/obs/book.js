@@ -16,7 +16,6 @@ exports.create = function (api) {
   return nest('book.obs.book', function (id) {
     if (!ref.isLink(id)) throw new Error('a valid id must be specified')
 
-    // REVIEW - I really like this struct + depject pattern
     let book = api.book.obs.struct({ key: id })
 
     api.book.async.get(id, dbBook => {
@@ -31,7 +30,7 @@ exports.create = function (api) {
         book.images.add(dbBook.common.image)
 
       Object.keys(dbBook.subjective).forEach((user) => {
-        if (book.subjective.has(user)) // REVIEW - isn't this always true ? (as user is one of the keys from Object.keys)
+        if (book.subjective.has(user))
         {
           Object.keys(dbBook.subjective[user]).forEach((v) => {
             book.subjective.get(user)[v].set(dbBook.subjective[user][v])

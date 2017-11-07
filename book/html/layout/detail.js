@@ -50,7 +50,7 @@ exports.create = (api) => {
       h('input', {
         'ev-input': e => value.set(e.target.value),
         value,
-        placeholder: 'your rating'  // REVIEW - I spread the keys over several lines to make this easier to read
+        placeholder: 'your rating'
       }),
       h('span.text', { innerHTML: computed(value, simpleMarkdown) })
     )
@@ -79,8 +79,6 @@ exports.create = (api) => {
   }
 
   function simpleEdit(isEditing, name, value) {
-    // REVIEW - I split out logic into new lines when it's muddying the html areas
-    // REVIEW - don't use when + computed (when is just like a special sort of computed... jus use computed and role your own
     const classList = computed([value, isEditing], (v, e) => { 
       return v || e 
         ? '-expanded'
@@ -110,13 +108,12 @@ exports.create = (api) => {
         computed(value, api.message.html.markdown)
       )
     ])
-    // REVIEW - refactored this to follow same pattern as function above
   }
 
   function bookLayout (msg, opts) {
-    if (!(opts.layout === undefined || opts.layout === 'detail')) return
+    const { layout, obs, isEditing, isCard } = opts
 
-    const { obs, isEditing, isCard } = opts
+    if (layout !== undefined && layout !== 'detail') return
 
     const { title, authors, description, images } = api.book.html
 
@@ -156,14 +153,14 @@ exports.create = (api) => {
             let isMe = Value(api.keys.sync.id() == user)
             let isOwnEditingSubj = computed([isEditingSubjective, isMe],
                                             (e, me) => { return e && me })
+            let showRating = computed([subjective.rating, isEditingSubjective],
+                                      (v, e) => { return v || e })
             reviews.push([
-              // REVIEW - this section is hard to read, I'd get rid of the when computed and change in indenting (but that could be my personal taste)
-              h('section', [api.about.html.image(user),
-                            when(computed([subjective.rating, isEditingSubjective],
-                                          (v, e) => { return v || e }),
-                                 h('span.text', [api.about.obs.name(user), ' rated '])),
-                            ratingEdit(isOwnEditingSubj, subjective.rating),
-                            ratingTypeEdit(isOwnEditingSubj, subjective.ratingType)]),
+              h('section',
+                [api.about.html.image(user),
+                 when(showRating, h('span.text', [api.about.obs.name(user), ' rated '])),
+                 ratingEdit(isOwnEditingSubj, subjective.rating),
+                 ratingTypeEdit(isOwnEditingSubj, subjective.ratingType)]),
               simpleEdit(isOwnEditingSubj, 'Shelve', subjective.shelve),
               simpleEdit(isOwnEditingSubj, 'Genre', subjective.genre),
               textEdit(isOwnEditingSubj, 'Review', subjective.review)
