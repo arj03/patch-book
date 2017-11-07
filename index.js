@@ -6,4 +6,7 @@ const modules = bulk(__dirname, ['!(node_modules|test|util)/**/*.js'], {
   }
 })
 
-module.exports = modules
+module.exports = {
+  'patch-book': modules
+  // REVIEW - best to scope all depject module exports lest they over-ride each other
+}

@@ -4,7 +4,7 @@ const { Value, Struct, Dict } =  require('mutant')
 const deepEq = require('deep-equal')
 
 exports.needs = nest({
-  'book.pull.get': 'first',
+  'book.async.get': 'first',
   'book.obs.struct': 'first',
   'keys.sync.id': 'first',
   'sbot.async.publish': 'first'
@@ -16,8 +16,10 @@ exports.create = function (api) {
   return nest('book.obs.book', function (id) {
     if (!ref.isLink(id)) throw new Error('a valid id must be specified')
 
+    // REVIEW - I really like this struct + depject pattern
     let book = api.book.obs.struct({ key: id })
-    api.book.pull.get(id, dbBook => {
+
+    api.book.async.get(id, dbBook => {
       book.title.set(dbBook.common.title)
       book.authors.set(dbBook.common.authors)
       book.description.set(dbBook.common.description)
@@ -29,7 +31,7 @@ exports.create = function (api) {
         book.images.add(dbBook.common.image)
 
       Object.keys(dbBook.subjective).forEach((user) => {
-        if (book.subjective.has(user))
+        if (book.subjective.has(user)) // REVIEW - isn't this always true ? (as user is one of the keys from Object.keys)
         {
           Object.keys(dbBook.subjective[user]).forEach((v) => {
             book.subjective.get(user)[v].set(dbBook.subjective[user][v])
