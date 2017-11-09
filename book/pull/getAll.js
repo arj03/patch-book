@@ -16,6 +16,6 @@ exports.create = function (api) {
   function getAll() {
     // we can trust this returns a pull stream alread because it's sbot.pull.*
     return api.sbot.pull.messagesByType({ type: 'bookclub', fillCache: true,
-                                          keys: true, reverse: true, live: true })
+                                          keys: true, reverse: false, live: true })
   }
 }
