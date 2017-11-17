@@ -1,0 +1,15 @@
+div.books {
+  display: flex
+
+  section.right {
+     margin-top: 20px
+     font-size: 1.0rem
+     padding-left: 30px
+
+     ul {
+       list-style-type: none
+       font-size: 0.8rem
+       padding: 0px
+     }
+  }
+}
