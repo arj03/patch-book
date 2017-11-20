@@ -42,9 +42,11 @@ exports.create = (api) => {
         }, '+'),
         h('.details', [
           images({images: obs.images}),
-          title({title: obs.title, msg}),
-          authors({authors: obs.authors}),
-          description({description: obs.description})
+          h('div', [
+            title({title: obs.title, msg}),
+            authors({authors: obs.authors}),
+            description({description: obs.description})
+          ])
         ])
       ])
     ]
