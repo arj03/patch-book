@@ -13,8 +13,8 @@ exports.create = function (api) {
       key: Value(''),
       title: Value(''),
       authors: Value(''),
-      description: Value(''),
       series: Value(''),
+      description: Value(''),
       images: Set([]),
       subjective: Dict()
     })
@@ -27,8 +27,8 @@ exports.create = function (api) {
         type: 'bookclub',
         title: s.title,
         authors: s.authors,
-        description: s.description,
-        series: s.series
+        series: s.series,
+        description: s.description
       }
 
       if (s.images.length > 0)
