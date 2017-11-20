@@ -22,6 +22,7 @@ exports.create = function (api) {
       book.title.set(dbBook.common.title)
       book.authors.set(dbBook.common.authors)
       book.description.set(dbBook.common.description)
+      book.series.set(dbBook.common.series)
 
       const { image } = dbBook.common
 
@@ -56,6 +57,7 @@ exports.create = function (api) {
       msg.title = b.title
       msg.authors = b.authors
       msg.description = b.description
+      msg.series = b.series
 
       if (b.images.length > 0)
         msg.image = b.images[0]

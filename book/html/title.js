@@ -11,10 +11,14 @@ exports.gives = nest(
 
 exports.create = (api) => {
   return nest('book.html.title', title)
-  function title ({title, msg, isEditing, onUpdate}) {
+  function title({title, msg, isEditing, onUpdate}) {
     return h('section.title',
       when(isEditing,
-        h('input', {'ev-input': e => onUpdate(e.target.value), value: title}),
+        h('input', {
+          'ev-input': e => onUpdate(e.target.value),
+          placeholder: 'Title',
+          value: title
+        }),
         h('a', {href: msg.key}, title)
       )
     )

@@ -16,6 +16,7 @@ exports.needs = nest({
   'book.html': {
     'title': 'first',
     'authors': 'first',
+    'series': 'first',
     'description': 'first',
     'images': 'first'
   }
@@ -115,7 +116,7 @@ exports.create = (api) => {
 
     if (layout !== undefined && layout !== 'detail') return
 
-    const { title, authors, description, images } = api.book.html
+    const { title, authors, description, series, images } = api.book.html
 
     let isEditingSubjective = Value(false)
     let originalSubjective = {}
@@ -125,6 +126,7 @@ exports.create = (api) => {
     return [h('Message -book-detail', [
       title({ title: obs.title, msg, isEditing, onUpdate: obs.title.set }),
       authors({authors: obs.authors, isEditing, onUpdate: obs.authors.set}),
+      series({ series: obs.series, msg, isEditing, onUpdate: obs.series.set }),
       h('section.content', [
         images({images: obs.images, isEditing, onUpdate: obs.images.add }),
         h('section.description',

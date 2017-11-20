@@ -1,7 +1,7 @@
 Message -book-detail {
   display: block
 
-  section.title, section.authors {
+  section.title, section.authors, section.series {
     input {
       border: 1px solid gainsboro
       height: 1.3rem
@@ -11,6 +11,10 @@ Message -book-detail {
 
   section.title input {
       height: 2rem
+      margin-bottom: 5px
+  }
+
+  section.authors input {
       margin-bottom: 5px
   }
 

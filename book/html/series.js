@@ -7,25 +7,25 @@ exports.needs = nest({
 })
 
 exports.gives = nest(
-  'book.html.authors'
+  'book.html.series'
 )
 
 exports.create = (api) => {
-  return nest('book.html.authors', authors)
-  function authors ({authors, isEditing, onUpdate}) {
-    return h('section.authors',
+  return nest('book.html.series', series)
+  function series({series, msg, isEditing, onUpdate}) {
+    return h('section.series',
       when(isEditing,
         h('input', {
           'ev-input': e => onUpdate(e.target.value),
-          placeholder: 'Authors',
-          value: authors
+          placeholder: 'Series',
+          value: series
         }),
         h('a', { 'href': '#',
                  'ev-click': () => api.app.sync.goTo({
                    page: 'books',
-                   query: 'authors=' + authors()
+                   query: 'series=' + series()
                  })
-               }, authors)
+               }, series)
       )
     )
   }

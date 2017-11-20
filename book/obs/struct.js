@@ -14,6 +14,7 @@ exports.create = function (api) {
       title: Value(''),
       authors: Value(''),
       description: Value(''),
+      series: Value(''),
       images: Set([]),
       subjective: Dict()
     })
@@ -26,7 +27,8 @@ exports.create = function (api) {
         type: 'bookclub',
         title: s.title,
         authors: s.authors,
-        description: s.description
+        description: s.description,
+        series: s.series
       }
 
       if (s.images.length > 0)
