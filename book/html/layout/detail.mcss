@@ -10,12 +10,21 @@ Message -book-detail {
   }
 
   section.title input {
-      height: 2rem
-      margin-bottom: 5px
+    height: 2rem
+    margin-bottom: 5px
   }
 
   section.authors input {
-      margin-bottom: 5px
+    margin-bottom: 5px
+  }
+
+  section.series {
+    span.seriesNo {
+      margin-left: 5px
+    }
+    input.seriesNo {
+      width: 50px
+    }
   }
 
   section.subjective {

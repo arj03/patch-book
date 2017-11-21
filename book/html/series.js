@@ -12,8 +12,8 @@ exports.gives = nest(
 
 exports.create = (api) => {
   return nest('book.html.series', series)
-  function series({series, msg, isEditing, onUpdate}) {
-    return h('section.series',
+  function series({series, seriesNo, msg, isEditing, onUpdate, onUpdateNo}) {
+    return h('section.series', [
       when(isEditing,
         h('input', {
           'ev-input': e => onUpdate(e.target.value),
@@ -26,7 +26,15 @@ exports.create = (api) => {
                    query: 'series=' + series()
                  })
                }, series)
-      )
+      ),
+      when(isEditing,
+        h('input.seriesNo', {
+          'ev-input': e => onUpdateNo(e.target.value),
+          placeholder: 'No',
+          value: seriesNo
+        }),
+        h('span.seriesNo', seriesNo))
+      ]
     )
   }
 }

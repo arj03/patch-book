@@ -6,6 +6,14 @@ Create -book {
     padding: 5px
   }
 
+  section.content {
+    div.series {
+      input.seriesNo {
+        width: 50px
+      }
+    }
+  }
+
   section.content textarea {
     border: 1px solid gainsboro
     width: 600px

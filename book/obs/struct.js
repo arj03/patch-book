@@ -14,6 +14,7 @@ exports.create = function (api) {
       title: Value(''),
       authors: Value(''),
       series: Value(''),
+      seriesNo: Value(''),
       description: Value(''),
       images: Set([]),
       subjective: Dict()
@@ -28,6 +29,7 @@ exports.create = function (api) {
         title: s.title,
         authors: s.authors,
         series: s.series,
+        seriesNo: s.seriesNo,
         description: s.description
       }
 
