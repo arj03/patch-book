@@ -1,6 +1,5 @@
 const nest = require('depnest')
 const { h, when, computed, Value } = require('mutant')
-var htmlEscape = require('html-escape')
 const addSuggest = require('suggest-box')
 
 exports.needs = nest({
@@ -9,7 +8,7 @@ exports.needs = nest({
   'about.obs.name': 'first',
   'keys.sync.id': 'first',
   'emoji.async.suggest': 'first',
-  'emoji.sync.url': 'first',
+  'book.html.simpleEmoji': 'first',
   'message.html': {
     'markdown': 'first'
   },
@@ -27,25 +26,6 @@ exports.gives = nest('book.html.layout')
 exports.create = (api) => {
   return nest('book.html.layout', bookLayout)
 
-  function renderEmoji (emoji, url) {
-    if (!url) return ':' + emoji + ':'
-    return `
-      <img
-        src="${htmlEscape(url)}"
-        alt=":${htmlEscape(emoji)}:"
-        title=":${htmlEscape(emoji)}:"
-        class="emoji"
-      >
-    `
-  }
-
-  function simpleMarkdown(text) {
-    if (text.startsWith(':'))
-      return renderEmoji(text, api.emoji.sync.url(text.match(/:([^:]*)/)[1]))
-    else
-      return text
-  }
-  
   function ratingEdit(isEditing, value) {
     return when(isEditing,
       h('input', {
@@ -53,7 +33,7 @@ exports.create = (api) => {
         value,
         placeholder: 'your rating'
       }),
-      h('span.text', { innerHTML: computed(value, simpleMarkdown) })
+      h('span.text', { innerHTML: computed(value, api.book.html.simpleEmoji) })
     )
   }
 
@@ -76,7 +56,7 @@ exports.create = (api) => {
     })
 
     return when(isEditing, suggestWrapper,
-                h('span.text', { innerHTML: computed(value, simpleMarkdown) }))
+                h('span.text', { innerHTML: computed(value, api.book.html.simpleEmoji) }))
   }
 
   function simpleEdit(isEditing, name, value) {

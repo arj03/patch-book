@@ -1,0 +1,12 @@
+Message {
+  section.content {
+    span {
+      img.emoji {
+          height: 1.2em;
+          width: 1.2em;
+          vertical-align: middle;
+          margin-top: -0.2em;
+      }
+    }
+  }
+}
