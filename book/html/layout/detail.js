@@ -188,7 +188,7 @@ exports.create = (api) => {
             isEditingSubjective.set(!isEditingSubjective())
           }
         },
-          when(isEditingSubjective, 'Cancel', 'Edit rating')),
+          when(isEditingSubjective, 'Cancel', 'Edit my rating')),
         when(isEditingSubjective, h('button', { 'ev-click': () => saveSubjective(obs) }, 'Update rating'))
       ]),
     ])]
