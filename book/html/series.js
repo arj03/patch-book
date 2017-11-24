@@ -1,5 +1,5 @@
 const nest = require('depnest')
-const { h, when } = require('mutant')
+const { h, when, computed } = require('mutant')
 
 exports.needs = nest({
   'blob.sync.url': 'first',
@@ -33,7 +33,7 @@ exports.create = (api) => {
           placeholder: 'No',
           value: seriesNo
         }),
-        h('span.seriesNo', seriesNo))
+        when(seriesNo, h('span.seriesNo', seriesNo)))
       ]
     )
   }

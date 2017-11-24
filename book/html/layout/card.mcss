@@ -48,12 +48,16 @@ Message -book-card {
 
           section.title {
             font-size: 1.5rem
-            margin-bottom: 0.3rem
+          }
+
+          section.series {
+            span.seriesNo {
+              margin-left: 5px
+            }
           }
 
           section.authors {
             font-style: italic
-            margin-bottom: 1rem
           }
         }
       }

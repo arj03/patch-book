@@ -106,9 +106,9 @@ exports.create = (api) => {
 
     return [h('Message -book-detail', [
       title({ title: obs.title, msg, isEditing, onUpdate: obs.title.set }),
-      authors({authors: obs.authors, isEditing, onUpdate: obs.authors.set}),
       series({ series: obs.series, seriesNo: obs.seriesNo, msg, isEditing,
                onUpdate: obs.series.set, onUpdateNo: obs.seriesNo.set }),
+      authors({authors: obs.authors, isEditing, onUpdate: obs.authors.set}),
       h('section.content', [
         images({images: obs.images, isEditing, onUpdate: obs.images.add }),
         h('section.description',
