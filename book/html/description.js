@@ -16,7 +16,7 @@ exports.create = (api) => {
     return h('Description', [
       when(isEditing,
         input,
-        computed(description, (d) =>  d ? markdown(d) : '')
+        computed(description, (d) => d ? markdown(d) : '')
       )
     ])
   }
