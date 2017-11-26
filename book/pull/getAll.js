@@ -31,7 +31,7 @@ exports.create = function (api) {
       many([
         pull(
           getCurrent(),
-          sort((a, b) => a.value.timestamp >= b.value.timestamp)
+          sort((a, b) => a.value.timestamp - b.value.timestamp)
         ),
         getLive()
       ])
