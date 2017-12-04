@@ -26,6 +26,6 @@ exports.create = function (api) {
     if (text.startsWith(':'))
       return renderEmoji(text, api.emoji.sync.url(text.match(/:([^:]*)/)[1]))
     else
-      return text
+      return '<span>' + text + '</span>'
   }
 }
