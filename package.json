@@ -1,6 +1,6 @@
 {
   "name": "patch-book",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "A book rating system for patch-core compatible scuttlebutt clients",
   "main": "index.js",
   "directories": {
