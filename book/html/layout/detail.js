@@ -91,7 +91,7 @@ exports.create = (api) => {
     ])
   }
 
-  function bookLayout (msg, opts) {
+  function bookLayout(msg, opts) {
     const { layout, obs, isEditing, isCard } = opts
 
     if (layout !== undefined && layout !== 'detail') return
@@ -158,12 +158,16 @@ exports.create = (api) => {
         h('button.subjective', {
           'ev-click': () => {
             if (isEditingSubjective()) { // cancel
-              let subj = obs.subjective.get(api.keys.sync.id())
-              Object.keys(originalSubjective).forEach((v) => {
-                subj[v].set(originalSubjective[v])
-              })
-            } else
-              originalSubjective = JSON.parse(JSON.stringify(obs.subjective.get(api.keys.sync.id())()))
+              if (obs.subjective.has(api.keys.sync.id())) {
+                let subj = obs.subjective.get(api.keys.sync.id())
+                Object.keys(originalSubjective).forEach((v) => {
+                  subj[v].set(originalSubjective[v])
+                })
+              }
+            } else {
+              if (obs.subjective.has(api.keys.sync.id()))
+                originalSubjective = JSON.parse(JSON.stringify(obs.subjective.get(api.keys.sync.id())()))
+            }
 
             isEditingSubjective.set(!isEditingSubjective())
           }
