@@ -137,12 +137,12 @@ exports.create = (api) => {
             let isMe = Value(api.keys.sync.id() == user)
             let isOwnEditingSubj = computed([isEditingSubjective, isMe],
                                             (e, me) => { return e && me })
-            let showRating = computed([subjective.rating, isEditingSubjective],
-                                      (v, e) => { return v || e })
+            let showRating = computed([subjective.rating, isEditingSubjective, isMe],
+                                      (v, e, me) => { return v || (e && me) })
             reviews.push([
               h('section',
                 [api.about.html.image(user),
-                 when(showRating, h('span.text', [api.about.obs.name(user), ' rated '])),
+                 h('span.text', [api.about.obs.name(user), when(showRating, ' rated ')]),
                  ratingEdit(isOwnEditingSubj, subjective.rating),
                  ratingTypeEdit(isOwnEditingSubj, subjective.ratingType)]),
               simpleEdit(isOwnEditingSubj, 'Shelve', subjective.shelve),
