@@ -1,4 +1,5 @@
 const pull = require('pull-stream')
+const sort = require('pull-sort')
 const nest = require('depnest')
 
 exports.gives = nest({
@@ -44,11 +45,12 @@ exports.create = function (api) {
 
   function applyAmends(book, cb) {
     pull(
-      api.sbot.pull.links({ dest: book.key, live: true }),
+      api.sbot.pull.links({ dest: book.key }), // FIXME: can't do live together with sorting and links doesn't support timestamp
       pull.filter(data => data.key),
       pull.asyncMap((data, cb) => {
         api.sbot.async.get(data.key, cb)
       }),
+      sort((a, b) => a.timestamp - b.timestamp),
       pull.drain(msg => {
         if (msg.content.type !== "about") return
 
