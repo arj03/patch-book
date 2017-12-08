@@ -56,6 +56,17 @@ Message -book-card {
             }
           }
 
+          span.text {
+            vertical-align: text-bottom
+
+            img.emoji {
+              height: 1.2em;
+              width: 1.2em;
+              vertical-align: middle;
+              margin-top: -0.2em;
+            }
+          }
+
           section.authors {
             font-style: italic
           }

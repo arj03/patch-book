@@ -1,5 +1,5 @@
 const nest = require('depnest')
-const { h, Value } = require('mutant')
+const { h, Value, when, computed } = require('mutant')
 
 exports.needs = nest({
   'message.html': {
@@ -8,6 +8,7 @@ exports.needs = nest({
     action: 'map',
     timestamp: 'first'
   },
+  'keys.sync.id': 'first',
   'about.html.image': 'first',
   'book.obs.book': 'first',
   'book.html': {
@@ -15,7 +16,8 @@ exports.needs = nest({
     title: 'first',
     series: 'first',
     authors: 'first',
-    images: 'first'
+    images: 'first',
+    simpleEmoji: 'first'
   }
 })
 
@@ -33,6 +35,18 @@ exports.create = (api) => {
 
     const { shortDescription, title, series, authors, images } = api.book.html
 
+    let hasRating = computed([obs.subjective], subjectives => {
+      return api.keys.sync.id() in subjectives && subjectives[api.keys.sync.id()].rating != ''
+    })
+
+    let ratingComputed = computed([obs.subjective], subjectives => {
+      if (api.keys.sync.id() in subjectives) {
+        let subj = subjectives[api.keys.sync.id()]
+        return 'Your rating: ' + subj.rating + ' ' + api.book.html.simpleEmoji(subj.ratingType)
+      } else
+        return ''
+    })
+
     const content = [
       h('a', { href: msg.key }, [
         h('.toggle-layout', {
@@ -47,6 +61,7 @@ exports.create = (api) => {
             title({title: obs.title, msg}),
             series({series: obs.series, seriesNo: obs.seriesNo}),
             authors({authors: obs.authors}),
+            when(hasRating, h('span.text', { innerHTML: ratingComputed })),
             shortDescription(obs.description)
           ])
         ])

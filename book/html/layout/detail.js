@@ -8,16 +8,16 @@ exports.needs = nest({
   'about.obs.name': 'first',
   'keys.sync.id': 'first',
   'emoji.async.suggest': 'first',
-  'book.html.simpleEmoji': 'first',
   'message.html': {
-    'markdown': 'first'
+    markdown: 'first'
   },
   'book.html': {
-    'title': 'first',
-    'authors': 'first',
-    'series': 'first',
-    'description': 'first',
-    'images': 'first'
+    title: 'first',
+    authors: 'first',
+    series: 'first',
+    description: 'first',
+    images: 'first',
+    simpleEmoji: 'first'
   }
 })
 
