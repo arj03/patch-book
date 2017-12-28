@@ -91,6 +91,57 @@ exports.create = (api) => {
     ])
   }
 
+  function saveSubjective(obs, isEditingSubjective) {
+    obs.updateSubjective()
+    isEditingSubjective.set(false)
+  }
+
+  function handleSubjective(user, i, obs) {
+    let originalSubjective = {}
+    let isEditingSubjective = Value(false)
+    let subjective = obs.subjective.get(user)
+    let isMe = Value(api.keys.sync.id() == user)
+    let isOwnEditingSubj = computed([isEditingSubjective, isMe],
+                                    (e, me) => { return e && me })
+    let showRating = computed([subjective.rating, isEditingSubjective, isMe],
+                              (v, e, me) => { return v || (e && me) })
+
+    function editRatingClick() {
+      if (isEditingSubjective()) { // cancel
+        if (obs.subjective.has(api.keys.sync.id())) {
+          let subj = obs.subjective.get(api.keys.sync.id())
+          Object.keys(originalSubjective).forEach((v) => {
+            subj[v].set(originalSubjective[v])
+          })
+        }
+      } else {
+        if (obs.subjective.has(api.keys.sync.id()))
+          originalSubjective = JSON.parse(JSON.stringify(obs.subjective.get(api.keys.sync.id())()))
+      }
+
+      isEditingSubjective.set(!isEditingSubjective())
+    }
+
+    return [
+      h('section',
+        [api.about.html.image(user),
+         h('span.text', [api.about.obs.name(user), when(showRating, ' rated ')]),
+         ratingEdit(isOwnEditingSubj, subjective.rating),
+         ratingTypeEdit(isOwnEditingSubj, subjective.ratingType)]),
+      simpleEdit(isOwnEditingSubj, 'Shelve', subjective.shelve),
+      simpleEdit(isOwnEditingSubj, 'Genre', subjective.genre),
+      textEdit(isOwnEditingSubj, 'Review', subjective.review),
+      h('section.actions',
+        when(isMe, [
+          h('button.subjective', { 'ev-click': editRatingClick },
+            when(isEditingSubjective, 'Cancel', 'Edit my rating')),
+          when(isEditingSubjective,
+               h('button', { 'ev-click': () => saveSubjective(obs, isEditingSubjective) },
+                 'Update rating'))
+        ]))
+    ]
+  }
+
   function bookLayout(msg, opts) {
     const { layout, obs, isEditing, isCard } = opts
 
@@ -99,10 +150,19 @@ exports.create = (api) => {
     const { title, authors, description,
             series, seriesNo, images } = api.book.html
 
-    let isEditingSubjective = Value(false)
-    let originalSubjective = {}
     let originalBook = {}
     let reviews = []
+
+    function editClick() {
+      if (isEditing()) { // cancel
+        Object.keys(originalBook).forEach((v) => {
+          obs[v].set(originalBook[v])
+        })
+      } else
+        originalBook = JSON.parse(JSON.stringify(obs()))
+
+      isEditing.set(!isEditing())
+    }
 
     return [h('Message -book-detail', [
       title({ title: obs.title, msg, isEditing, onUpdate: obs.title.set }),
@@ -115,16 +175,7 @@ exports.create = (api) => {
           description({description: obs.description, isEditing, onUpdate: obs.description.set})),
       ]),
       h('section.actions', [
-        h('button.edit', { 'ev-click': () => {
-          if (isEditing()) { // cancel
-            Object.keys(originalBook).forEach((v) => {
-              obs[v].set(originalBook[v])
-            })
-          } else
-            originalBook = JSON.parse(JSON.stringify(obs()))
-
-          isEditing.set(!isEditing())
-        } },
+        h('button.edit', { 'ev-click': editClick },
           when(isEditing, 'Cancel', 'Edit book')),
         when(isEditing, h('button', {'ev-click': () => saveBook(obs)}, 'Update book'))
       ]),
@@ -133,60 +184,18 @@ exports.create = (api) => {
           let i = 0;
           Object.keys(subjectives).forEach(user => {
             if (i++ < reviews.length) return
-            let subjective = obs.subjective.get(user)
-            let isMe = Value(api.keys.sync.id() == user)
-            let isOwnEditingSubj = computed([isEditingSubjective, isMe],
-                                            (e, me) => { return e && me })
-            let showRating = computed([subjective.rating, isEditingSubjective, isMe],
-                                      (v, e, me) => { return v || (e && me) })
-            reviews.push([
-              h('section',
-                [api.about.html.image(user),
-                 h('span.text', [api.about.obs.name(user), when(showRating, ' rated ')]),
-                 ratingEdit(isOwnEditingSubj, subjective.rating),
-                 ratingTypeEdit(isOwnEditingSubj, subjective.ratingType)]),
-              simpleEdit(isOwnEditingSubj, 'Shelve', subjective.shelve),
-              simpleEdit(isOwnEditingSubj, 'Genre', subjective.genre),
-              textEdit(isOwnEditingSubj, 'Review', subjective.review)
-            ])
+            reviews.push(handleSubjective(user, i, obs))
           })
 
           return reviews
         })
-      ]),
-      h('section.actions', [
-        h('button.subjective', {
-          'ev-click': () => {
-            if (isEditingSubjective()) { // cancel
-              if (obs.subjective.has(api.keys.sync.id())) {
-                let subj = obs.subjective.get(api.keys.sync.id())
-                Object.keys(originalSubjective).forEach((v) => {
-                  subj[v].set(originalSubjective[v])
-                })
-              }
-            } else {
-              if (obs.subjective.has(api.keys.sync.id()))
-                originalSubjective = JSON.parse(JSON.stringify(obs.subjective.get(api.keys.sync.id())()))
-            }
-
-            isEditingSubjective.set(!isEditingSubjective())
-          }
-        },
-          when(isEditingSubjective, 'Cancel', 'Edit my rating')),
-        when(isEditingSubjective, h('button', { 'ev-click': () => saveSubjective(obs) }, 'Update rating'))
-      ]),
+      ])
     ])]
 
     function saveBook(obs) {
       obs.amend()
 
       isEditing.set(false)
-    }
-
-    function saveSubjective(obs) {
-      obs.updateSubjective()
-
-      isEditingSubjective.set(false)
     }
   }
 }

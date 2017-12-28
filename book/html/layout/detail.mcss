@@ -28,6 +28,12 @@ Message -book-detail {
   }
 
   section.subjective {
+    section.actions {
+      flex-basis: 100%
+      display: flex
+      justify-content: flex-end
+    }
+
     div {
       -contracted {
         display: none
