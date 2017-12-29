@@ -77,6 +77,18 @@ exports.create = function (api) {
       api.sbot.async.publish(msg, cb)
     }
 
+    book.addCommentToSubjective = function(subjectiveId, comment, cb)
+    {
+      /*
+       "content": {
+       "type": "post",
+       "root": "%THGnuD1d3cnVaa9+d6mIxE9dBktlKc3UwrjlKWmVE+M=.sha256", <- about
+       "branch": "%THGnuD1d3cnVaa9+d6mIxE9dBktlKc3UwrjlKWmVE+M=.sha256", <- prev
+       "text": "testing comment"
+       }
+       */
+    }
+
     return book
   })
 }

@@ -33,22 +33,55 @@ exports.create = function (api) {
       common: msg.content,
       subjective: {
         [api.keys.sync.id()]: {
-          rating: '', ratingType: '', review: '', shelve: '', genre: ''
+          key: '', rating: '', ratingType: '', review: '', shelve: '', genre: '', comments: []
         }
       }
     }
 
     cb(book)
 
-    applyAmends(book, cb)
+    applyAmends(book, updatedBook =>
+                getCommentsOnSubjective(updatedBook, cb))
+  }
+
+  function getCommentsOnSubjective(book, cb)
+  {
+    pull(
+      pull.values(Object.values(book.subjective)),
+      pull.drain(subj => {
+        if (subj.key) {
+          pull(
+            api.sbot.pull.links({ dest: subj.key }),
+            pull.filter(data => data.key),
+            pull.asyncMap((data, cb) => {
+              api.sbot.async.get(data.key, cb)
+            }),
+            sort((a, b) => a.timestamp - b.timestamp),
+            pull.drain(msg => {
+              if (msg.content.type !== "post") return
+
+              // FIXME: links is buggy and returns the same message twice
+              if (!subj.comments.some(c => c.content.text == msg.content.text))
+                subj.comments.push(msg)
+            }, () => cb(book))
+          )
+        }
+      }, () => cb(book))
+    )
   }
 
   function applyAmends(book, cb) {
     pull(
-      api.sbot.pull.links({ dest: book.key }), // FIXME: can't do live together with sorting and links doesn't support timestamp
+      api.sbot.pull.links({ dest: book.key }), // FIXME: can't do live
+                                               // together with
+                                               // sorting and links
+                                               // doesn't support timestamp
       pull.filter(data => data.key),
       pull.asyncMap((data, cb) => {
-        api.sbot.async.get(data.key, cb)
+        api.sbot.async.get(data.key, (err, msg) => {
+          msg.key = data.key
+          cb(err, msg)
+        })
       }),
       sort((a, b) => a.timestamp - b.timestamp),
       pull.drain(msg => {
@@ -58,11 +91,13 @@ exports.create = function (api) {
 
         if (rating || ratingType || shelve || genre || review) {
           book.subjective[msg.author] = {
+            key: msg.key,
             rating,
             ratingType,
             shelve,
             genre,
-            review
+            review,
+            comments: []
           }
         } else
           book.common = Object.assign({}, book.common, msg.content)

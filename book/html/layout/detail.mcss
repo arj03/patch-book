@@ -88,6 +88,27 @@ Message -book-detail {
         }
       }
     }
+
+    section.comments {
+      div {
+        img.Avatar {
+          width: 2rem;
+          height: 2rem;
+          margin-right: 0.5rem
+        }
+
+        span.text {
+          vertical-align: text-bottom
+
+          img.emoji {
+            height: 1.2em;
+            width: 1.2em;
+            vertical-align: middle;
+            margin-top: -0.2em;
+          }
+        }
+      }
+    }
   }
 
   section.title {

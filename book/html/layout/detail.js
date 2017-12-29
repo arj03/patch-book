@@ -1,5 +1,5 @@
 const nest = require('depnest')
-const { h, when, computed, Value } = require('mutant')
+const { h, when, computed, Value, map } = require('mutant')
 const addSuggest = require('suggest-box')
 
 exports.needs = nest({
@@ -131,6 +131,12 @@ exports.create = (api) => {
       simpleEdit(isOwnEditingSubj, 'Shelve', subjective.shelve),
       simpleEdit(isOwnEditingSubj, 'Genre', subjective.genre),
       textEdit(isOwnEditingSubj, 'Review', subjective.review),
+      h('section.comments', map(subjective.comments, com => {
+        return h('div',
+                 [api.about.html.image(com.author),
+                  // FIXME: time, in general like cards
+                  h('span.text', computed(com.content.text, api.message.html.markdown))])
+      })),
       h('section.actions',
         when(isMe, [
           h('button.subjective', { 'ev-click': editRatingClick },
