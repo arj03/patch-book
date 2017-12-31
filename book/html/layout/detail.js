@@ -146,11 +146,14 @@ exports.create = (api) => {
                                              timestamp({key: '', value: com })]),
                     h('section.content', computed(com.content.text, markdown))])
         }),
-        h('textarea', {'ev-input': e => subjectiveComment.set(e.target.value) }),
-        h('button', { 'ev-click': () => obs.addCommentToSubjective(subjective.key(),
-                                                                   lastCommentId || subjective.key(),
-                                                                   subjectiveComment()) },
-         'Add comment')
+        when(subjective.key,
+             h('textarea', {'ev-input': e => subjectiveComment.set(e.target.value) })),
+        when(subjective.key,
+             h('button', { 'ev-click': () =>  {
+               obs.addCommentToSubjective(subjective.key(),
+                                          lastCommentId || subjective.key(),
+                                          subjectiveComment()) }
+                         }, 'Add comment'))
       ]),
       h('section.actions',
         when(isMe, [
