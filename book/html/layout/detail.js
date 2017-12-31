@@ -9,7 +9,8 @@ exports.needs = nest({
   'keys.sync.id': 'first',
   'emoji.async.suggest': 'first',
   'message.html': {
-    markdown: 'first'
+    markdown: 'first',
+    timestamp: 'first'
   },
   'book.html': {
     title: 'first',
@@ -106,6 +107,8 @@ exports.create = (api) => {
     let showRating = computed([subjective.rating, isEditingSubjective, isMe],
                               (v, e, me) => { return v || (e && me) })
 
+    const { timestamp, markdown } = api.message.html
+
     function editRatingClick() {
       if (isEditingSubjective()) { // cancel
         if (obs.subjective.has(api.keys.sync.id())) {
@@ -133,9 +136,10 @@ exports.create = (api) => {
       textEdit(isOwnEditingSubj, 'Review', subjective.review),
       h('section.comments', map(subjective.comments, com => {
         return h('div',
-                 [api.about.html.image(com.author),
-                  // FIXME: time, in general like cards
-                  h('span.text', computed(com.content.text, api.message.html.markdown))])
+                 [h('section.avatar', api.about.html.image(com.author)),
+                  h('section.authorTime', [api.about.obs.name(com.author),
+                                           timestamp({key: '', value: com })]),
+                  h('section.content', computed(com.content.text, markdown))])
       })),
       h('section.actions',
         when(isMe, [

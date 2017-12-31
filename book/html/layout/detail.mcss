@@ -91,13 +91,31 @@ Message -book-detail {
 
     section.comments {
       div {
-        img.Avatar {
-          width: 2rem;
-          height: 2rem;
-          margin-right: 0.5rem
+        position: relative
+        display: flex
+        flex-direction: row
+        flex-wrap: wrap
+        justify-content: flex-end
+
+        section.avatar {
+          position: absolute
+          left: 0.5rem
+          img.Avatar {
+            width: 2rem;
+            height: 2rem;
+            margin-right: 0.5rem
+          }
         }
 
-        span.text {
+        section.authorTime {
+          flex-basis: 93%
+          a.Timestamp {
+            margin-left: 0.3rem
+          }
+        }
+
+        section.content {
+          flex-basis: 93%
           vertical-align: text-bottom
 
           img.emoji {
