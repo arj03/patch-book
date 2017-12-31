@@ -54,7 +54,10 @@ exports.create = function (api) {
             api.sbot.pull.links({ dest: subj.key }),
             pull.filter(data => data.key),
             pull.asyncMap((data, cb) => {
-              api.sbot.async.get(data.key, cb)
+              api.sbot.async.get(data.key, (err, msg) => {
+                msg.key = data.key
+                cb(err, msg)
+              })
             }),
             sort((a, b) => a.timestamp - b.timestamp),
             pull.drain(msg => {

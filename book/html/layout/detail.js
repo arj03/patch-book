@@ -125,6 +125,9 @@ exports.create = (api) => {
       isEditingSubjective.set(!isEditingSubjective())
     }
 
+    let subjectiveComment = Value('')
+    let lastCommentId = null
+
     return [
       h('section',
         [api.about.html.image(user),
@@ -134,13 +137,21 @@ exports.create = (api) => {
       simpleEdit(isOwnEditingSubj, 'Shelve', subjective.shelve),
       simpleEdit(isOwnEditingSubj, 'Genre', subjective.genre),
       textEdit(isOwnEditingSubj, 'Review', subjective.review),
-      h('section.comments', map(subjective.comments, com => {
-        return h('div',
-                 [h('section.avatar', api.about.html.image(com.author)),
-                  h('section.authorTime', [api.about.obs.name(com.author),
-                                           timestamp({key: '', value: com })]),
-                  h('section.content', computed(com.content.text, markdown))])
-      })),
+      h('section.comments', [
+        map(subjective.comments, com => {
+          lastCommentId = com.key
+          return h('div',
+                   [h('section.avatar', api.about.html.image(com.author)),
+                    h('section.authorTime', [api.about.obs.name(com.author),
+                                             timestamp({key: '', value: com })]),
+                    h('section.content', computed(com.content.text, markdown))])
+        }),
+        h('textarea', {'ev-input': e => subjectiveComment.set(e.target.value) }),
+        h('button', { 'ev-click': () => obs.addCommentToSubjective(subjective.key(),
+                                                                   lastCommentId || subjective.key(),
+                                                                   subjectiveComment()) },
+         'Add comment')
+      ]),
       h('section.actions',
         when(isMe, [
           h('button.subjective', { 'ev-click': editRatingClick },

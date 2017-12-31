@@ -77,16 +77,16 @@ exports.create = function (api) {
       api.sbot.async.publish(msg, cb)
     }
 
-    book.addCommentToSubjective = function(subjectiveId, comment, cb)
+    book.addCommentToSubjective = function(subjectiveId, lastCommentId, comment, cb)
     {
-      /*
-       "content": {
+      let msg = {
        "type": "post",
-       "root": "%THGnuD1d3cnVaa9+d6mIxE9dBktlKc3UwrjlKWmVE+M=.sha256", <- about
-       "branch": "%THGnuD1d3cnVaa9+d6mIxE9dBktlKc3UwrjlKWmVE+M=.sha256", <- prev
-       "text": "testing comment"
-       }
-       */
+       "root": subjectiveId,
+       "branch": lastCommentId,
+       "text": comment
+      }
+
+      api.sbot.async.publish(msg, cb)
     }
 
     return book

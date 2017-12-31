@@ -90,6 +90,18 @@ Message -book-detail {
     }
 
     section.comments {
+      textarea {
+        border: 1px solid gainsboro
+        width: 500px
+        height: 200px
+        display: block
+        margin-left: 3rem
+      }
+
+      button {
+        margin-left: 3rem
+      }
+
       div {
         position: relative
         display: flex
@@ -108,6 +120,7 @@ Message -book-detail {
         }
 
         section.authorTime {
+          font-size: 0.8rem
           flex-basis: 93%
           a.Timestamp {
             margin-left: 0.3rem
@@ -116,7 +129,6 @@ Message -book-detail {
 
         section.content {
           flex-basis: 93%
-          vertical-align: text-bottom
 
           img.emoji {
             height: 1.2em;
