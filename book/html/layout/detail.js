@@ -7,6 +7,8 @@ exports.needs = nest({
   'about.html.image': 'first',
   'about.obs.name': 'first',
   'keys.sync.id': 'first',
+  'about.async.suggest': 'first',
+  'channel.async.suggest': 'first',
   'emoji.async.suggest': 'first',
   'message.html': {
     markdown: 'first',
@@ -128,6 +130,23 @@ exports.create = (api) => {
     let subjectiveComment = Value('')
     let lastCommentId = null
 
+    var getProfileSuggestions = api.about.async.suggest()
+    var getChannelSuggestions = api.channel.async.suggest()
+    var getEmojiSuggestions = api.emoji.async.suggest()
+
+    let textArea = h('textarea', {'ev-input': e => subjectiveComment.set(e.target.value) })
+
+    let textAreaWrapper = h('span', textArea)
+
+    addSuggest(textArea, (inputText, cb) => {
+      const char = inputText[0]
+      const wordFragment = inputText.slice(1)
+
+      if (char === '@') cb(null, getProfileSuggestions(wordFragment))
+      if (char === '#') cb(null, getChannelSuggestions(wordFragment))
+      if (char === ':') cb(null, getEmojiSuggestions(wordFragment))
+    }, {cls: 'PatchSuggest'})
+
     return [
       h('section',
         [api.about.html.image(user),
@@ -146,8 +165,7 @@ exports.create = (api) => {
                                              timestamp({key: '', value: com })]),
                     h('section.content', computed(com.content.text, markdown))])
         }),
-        when(subjective.key,
-             h('textarea', {'ev-input': e => subjectiveComment.set(e.target.value) })),
+        when(subjective.key, textAreaWrapper),
         when(subjective.key,
              h('button', { 'ev-click': () =>  {
                obs.addCommentToSubjective(subjective.key(),

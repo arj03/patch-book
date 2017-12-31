@@ -90,12 +90,14 @@ Message -book-detail {
     }
 
     section.comments {
-      textarea {
-        border: 1px solid gainsboro
-        width: 500px
-        height: 200px
-        display: block
-        margin-left: 3rem
+      span {
+        textarea {
+          border: 1px solid gainsboro
+          width: 500px
+          height: 200px
+          display: block
+          margin-left: 3rem
+        }
       }
 
       button {
