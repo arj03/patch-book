@@ -51,10 +51,12 @@ Message -book-detail {
         padding: 5px
       }
 
-      textarea {
-        border: 1px solid gainsboro
-        width: 600px
-        height: 250px
+      span {
+        textarea {
+          border: 1px solid gainsboro
+          width: 600px
+          height: 250px
+        }
       }
     }
     

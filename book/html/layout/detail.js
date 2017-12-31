@@ -85,10 +85,27 @@ exports.create = (api) => {
         : '-contracted'
     })
 
+    var getProfileSuggestions = api.about.async.suggest()
+    var getChannelSuggestions = api.channel.async.suggest()
+    var getEmojiSuggestions = api.emoji.async.suggest()
+
+    let textArea = h('textarea', {'ev-input': e => value.set(e.target.value), value })
+
+    let textAreaWrapper = h('span', textArea)
+
+    addSuggest(textArea, (inputText, cb) => {
+      const char = inputText[0]
+      const wordFragment = inputText.slice(1)
+
+      if (char === '@') cb(null, getProfileSuggestions(wordFragment))
+      if (char === '#') cb(null, getChannelSuggestions(wordFragment))
+      if (char === ':') cb(null, getEmojiSuggestions(wordFragment))
+    }, {cls: 'PatchSuggest'})
+
     return h('div', { classList }, [
       h('div', name + ':'),
       when(isEditing, 
-        h('textarea', {'ev-input': e => value.set(e.target.value), value }),
+        textAreaWrapper,
         computed(value, api.message.html.markdown)
       )
     ])
