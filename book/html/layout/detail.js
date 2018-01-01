@@ -12,7 +12,8 @@ exports.needs = nest({
   'emoji.async.suggest': 'first',
   'message.html': {
     markdown: 'first',
-    timestamp: 'first'
+    timestamp: 'first',
+    backlinks: 'first'
   },
   'book.html': {
     title: 'first',
@@ -231,6 +232,7 @@ exports.create = (api) => {
           when(isEditing, 'Cancel', 'Edit book')),
         when(isEditing, h('button', {'ev-click': () => saveBook(obs)}, 'Update book'))
       ]),
+      h('footer.backlinks', {}, api.message.html.backlinks(msg)),
       h('section.subjective', [
         computed(obs.subjective, subjectives => {
           let i = 0;

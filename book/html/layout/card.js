@@ -3,9 +3,7 @@ const { h, Value, when, computed } = require('mutant')
 
 exports.needs = nest({
   'message.html': {
-    backlinks: 'first',
     meta: 'map',
-    action: 'map',
     timestamp: 'first'
   },
   'keys.sync.id': 'first',
@@ -31,7 +29,7 @@ exports.create = (api) => {
 
     if (layout !== undefined && layout !== 'card') return
 
-    const { timestamp, meta, backlinks, action } = api.message.html
+    const { timestamp, meta } = api.message.html
 
     const { shortDescription, title, series, authors, images } = api.book.html
 
@@ -75,9 +73,7 @@ exports.create = (api) => {
       h('section.timestamp', {}, timestamp(msg)),
       h('section.meta', {}, meta(msg, { rawMessage })),
       h('section.content', {}, content),
-      h('section.raw-content', rawMessage),
-      h('section.actions', {}, action(msg)),
-      h('footer.backlinks', {}, backlinks(msg))
+      h('section.raw-content', rawMessage)
     ])
   }
 }
