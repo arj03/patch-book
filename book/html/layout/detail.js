@@ -78,18 +78,10 @@ exports.create = (api) => {
     ])
   }
 
-  function textEdit(isEditing, name, value) {
-    const classList = computed([value, isEditing], (v, e) => { 
-      return v || e 
-        ? '-expanded'
-        : '-contracted'
-    })
-
+  function suggestiveTextArea(textArea) {
     var getProfileSuggestions = api.about.async.suggest()
     var getChannelSuggestions = api.channel.async.suggest()
     var getEmojiSuggestions = api.emoji.async.suggest()
-
-    let textArea = h('textarea', {'ev-input': e => value.set(e.target.value), value })
 
     let textAreaWrapper = h('span', textArea)
 
@@ -101,6 +93,19 @@ exports.create = (api) => {
       if (char === '#') cb(null, getChannelSuggestions(wordFragment))
       if (char === ':') cb(null, getEmojiSuggestions(wordFragment))
     }, {cls: 'PatchSuggest'})
+
+    return textAreaWrapper
+  }
+  
+  function textEdit(isEditing, name, value) {
+    const classList = computed([value, isEditing], (v, e) => { 
+      return v || e 
+        ? '-expanded'
+        : '-contracted'
+    })
+
+    let textArea = h('textarea', {'ev-input': e => value.set(e.target.value), value })
+    let textAreaWrapper = suggestiveTextArea(textArea)
 
     return h('div', { classList }, [
       h('div', name + ':'),
@@ -147,23 +152,9 @@ exports.create = (api) => {
     let subjectiveComment = Value('')
     let lastCommentId = null
 
-    var getProfileSuggestions = api.about.async.suggest()
-    var getChannelSuggestions = api.channel.async.suggest()
-    var getEmojiSuggestions = api.emoji.async.suggest()
-
     let textArea = h('textarea', {'ev-input': e => subjectiveComment.set(e.target.value) })
-
-    let textAreaWrapper = h('span', textArea)
-
-    addSuggest(textArea, (inputText, cb) => {
-      const char = inputText[0]
-      const wordFragment = inputText.slice(1)
-
-      if (char === '@') cb(null, getProfileSuggestions(wordFragment))
-      if (char === '#') cb(null, getChannelSuggestions(wordFragment))
-      if (char === ':') cb(null, getEmojiSuggestions(wordFragment))
-    }, {cls: 'PatchSuggest'})
-
+    let textAreaWrapper = suggestiveTextArea(textArea)
+    
     return [
       h('section',
         [api.about.html.image(user),
