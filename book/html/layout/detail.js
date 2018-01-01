@@ -178,7 +178,9 @@ exports.create = (api) => {
              h('button', { 'ev-click': () =>  {
                obs.addCommentToSubjective(subjective.key(),
                                           lastCommentId || subjective.key(),
-                                          subjectiveComment()) }
+                                          subjectiveComment(), () => {
+                                            textArea.value = ''
+                                          }) }
                          }, 'Add comment'))
       ]),
       h('section.actions',
