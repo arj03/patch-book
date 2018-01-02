@@ -77,6 +77,7 @@ exports.create = function (api) {
       // ui convenience
       delete msg.comments
       delete msg.key
+      delete msg.allKeys
 
       api.sbot.async.publish(msg, cb)
     }

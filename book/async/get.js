@@ -33,7 +33,8 @@ exports.create = function (api) {
       common: msg.content,
       subjective: {
         [api.keys.sync.id()]: {
-          key: '', rating: '', ratingType: '', review: '', shelve: '', genre: '', comments: []
+          key: '', allKeys: [], rating: '', ratingType: '', review: '',
+          shelve: '', genre: '', comments: []
         }
       }
     }
@@ -51,23 +52,28 @@ exports.create = function (api) {
       pull.drain(subj => {
         if (subj.key) {
           pull(
-            api.sbot.pull.links({ dest: subj.key, live: true }),
-            pull.filter(data => data.key),
-            pull.asyncMap((data, cb) => {
-              api.sbot.async.get(data.key, (err, msg) => {
-                msg.key = data.key
-                cb(err, msg)
-              })
-            }),
-            //sort((a, b) => a.timestamp - b.timestamp),
-            pull.drain(msg => {
-              if (msg.content.type !== "post") return
+            pull.values(Object.values(subj.allKeys)),
+            pull.drain(key => {
+              pull(
+                api.sbot.pull.links({ dest: key, live: key == subj.key }),
+                pull.filter(data => data.key),
+                pull.asyncMap((data, cb) => {
+                  api.sbot.async.get(data.key, (err, msg) => {
+                    msg.key = data.key
+                    cb(err, msg)
+                  })
+                }),
+                //sort((a, b) => a.timestamp - b.timestamp),
+                pull.drain(msg => {
+                  if (msg.content.type !== "post") return
 
-              // FIXME: links is buggy and returns the same message twice
-              if (!subj.comments.some(c => c.content.text == msg.content.text)) {
-                subj.comments.push(msg)
-                cb(book)
-              }
+                  // FIXME: links is buggy and returns the same message twice
+                  if (!subj.comments.some(c => c.content.text == msg.content.text)) {
+                    subj.comments.push(msg)
+                    cb(book)
+                  }
+                })
+              )
             })
           )
         }
@@ -76,6 +82,8 @@ exports.create = function (api) {
   }
 
   function applyAmends(book, cb) {
+    let allAuthorKeys = {}
+
     pull(
       api.sbot.pull.links({ dest: book.key }), // FIXME: can't do live
                                                // together with
@@ -94,9 +102,16 @@ exports.create = function (api) {
 
         const { rating, ratingType, shelve, genre, review } = msg.content
 
+        if (!allAuthorKeys[msg.author])
+          allAuthorKeys[msg.author] = []
+
+        let allKeys = allAuthorKeys[msg.author]
+        allKeys.push(msg.key)
+
         if (rating || ratingType || shelve || genre || review) {
           book.subjective[msg.author] = {
             key: msg.key,
+            allKeys,
             rating,
             ratingType,
             shelve,
