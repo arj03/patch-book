@@ -165,6 +165,14 @@ exports.create = (api) => {
       simpleEdit(isOwnEditingSubj, 'Shelve', subjective.shelve),
       simpleEdit(isOwnEditingSubj, 'Genre', subjective.genre),
       textEdit(isOwnEditingSubj, 'Review', subjective.review),
+      h('section.actions',
+        when(isMe, [
+          h('button.subjective', { 'ev-click': editRatingClick },
+            when(isEditingSubjective, 'Cancel', 'Edit my rating')),
+          when(isEditingSubjective,
+               h('button', { 'ev-click': () => saveSubjective(obs, isEditingSubjective) },
+                 'Update rating'))
+        ])),
       h('section.comments', [
         map(subjective.comments, com => {
           lastCommentId = com.key
@@ -183,15 +191,7 @@ exports.create = (api) => {
                                             textArea.value = ''
                                           }) }
                          }, 'Add comment'))
-      ]),
-      h('section.actions',
-        when(isMe, [
-          h('button.subjective', { 'ev-click': editRatingClick },
-            when(isEditingSubjective, 'Cancel', 'Edit my rating')),
-          when(isEditingSubjective,
-               h('button', { 'ev-click': () => saveSubjective(obs, isEditingSubjective) },
-                 'Update rating'))
-        ]))
+      ])
     ]
   }
 

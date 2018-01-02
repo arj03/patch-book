@@ -74,6 +74,10 @@ exports.create = function (api) {
       let msg = { type: 'about', about: id }
       msg = Object.assign(msg, b.subjective[api.keys.sync.id()])
 
+      // ui convenience
+      delete msg.comments
+      delete msg.key
+
       api.sbot.async.publish(msg, cb)
     }
 
