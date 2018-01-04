@@ -1,4 +1,7 @@
-# Bookclub - a module for storing information about books
+# Patchbook
+
+A book rating system for
+[patchcore](https://github.com/ssbc/patchcore) compatible [scuttlebutt](https://github.com/ssbc/secure-scuttlebutt) clients
 
 ## Attributes:
 
@@ -7,16 +10,16 @@ common:
 - authors
 - description
 - series
-- [images]
+- seriesNo
+- image
 
 subjective:
-(- user (implied))
 - rating
-- rating type
-(- read (datetime))
+- ratingMax
+- ratingType
 - review
 - shelve
-- categories/genres
+- genre
 
 If we seperate common from user attributes, we can just merge common
 into a global object. User related (subjective) should infer the user
