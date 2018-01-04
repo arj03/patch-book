@@ -51,6 +51,7 @@ exports.create = function (api) {
     const content = msg.value.content
     return ['Rated ', h('a', { href: msg.value.content.about }, title),
             ' ' + content.rating + ' ',
+            content.ratingMax ? ' / ' + content.ratingMax : '',
             h('span.text', { innerHTML:
                              computed(content.ratingType,
                                       api.book.html.simpleEmoji) }),
