@@ -55,7 +55,7 @@ exports.create = function (api) {
             pull.values(Object.values(subj.allKeys)),
             pull.drain(key => {
               pull(
-                api.sbot.pull.links({ dest: key, live: key == subj.key }),
+                api.sbot.pull.links({ dest: key, rel: 'root', live: key == subj.key }),
                 pull.filter(data => data.key),
                 pull.asyncMap((data, cb) => {
                   api.sbot.async.get(data.key, (err, msg) => {
@@ -67,8 +67,7 @@ exports.create = function (api) {
                 pull.drain(msg => {
                   if (msg.content.type !== "post") return
 
-                  // FIXME: links is buggy and returns the same message twice
-                  if (!subj.comments.some(c => c.content.text == msg.content.text)) {
+                  if (!subj.comments.some(c => c.key == msg.key)) {
                     subj.comments.push(msg)
                     cb(book)
                   }
