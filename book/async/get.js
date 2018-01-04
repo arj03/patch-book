@@ -33,8 +33,8 @@ exports.create = function (api) {
       common: msg.content,
       subjective: {
         [api.keys.sync.id()]: {
-          key: '', allKeys: [], rating: '', ratingType: '', review: '',
-          shelve: '', genre: '', comments: []
+          key: '', allKeys: [], rating: '', ratingMax: '', ratingType: '',
+          review: '', shelve: '', genre: '', comments: []
         }
       }
     }
@@ -100,7 +100,7 @@ exports.create = function (api) {
       pull.drain(msg => {
         if (msg.content.type !== "about") return
 
-        const { rating, ratingType, shelve, genre, review } = msg.content
+        const { rating, ratingMax, ratingType, shelve, genre, review } = msg.content
 
         if (!allAuthorKeys[msg.author])
           allAuthorKeys[msg.author] = []
@@ -108,11 +108,12 @@ exports.create = function (api) {
         let allKeys = allAuthorKeys[msg.author]
         allKeys.push(msg.key)
 
-        if (rating || ratingType || shelve || genre || review) {
+        if (rating || ratingMax || ratingType || shelve || genre || review) {
           book.subjective[msg.author] = {
             key: msg.key,
             allKeys,
             rating,
+            ratingMax,
             ratingType,
             shelve,
             genre,

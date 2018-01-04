@@ -41,6 +41,17 @@ exports.create = (api) => {
     )
   }
 
+  function ratingMaxEdit(isEditing, value) {
+    return when(isEditing,
+      h('input', {
+        'ev-input': e => value.set(e.target.value),
+        value,
+        placeholder: 'out of'
+      }),
+      when(value, h('span.text', [' / ', value]))
+    )
+  }
+
   function ratingTypeEdit(isEditing, value) {
     let getEmojiSuggestions = api.emoji.async.suggest()
 
@@ -161,6 +172,7 @@ exports.create = (api) => {
         [api.about.html.image(user),
          h('span.text', [api.about.obs.name(user), when(showRating, ' rated ')]),
          ratingEdit(isOwnEditingSubj, subjective.rating),
+         ratingMaxEdit(isOwnEditingSubj, subjective.ratingMax),
          ratingTypeEdit(isOwnEditingSubj, subjective.ratingType)]),
       simpleEdit(isOwnEditingSubj, 'Shelve', subjective.shelve),
       simpleEdit(isOwnEditingSubj, 'Genre', subjective.genre),
