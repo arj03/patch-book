@@ -116,7 +116,11 @@ exports.create = (api) => {
         : '-contracted'
     })
 
-    let textArea = h('textarea', {'ev-input': e => value.set(e.target.value), value })
+    let textArea = h('textarea', {
+      'ev-input': e => value.set(e.target.value),
+      value,
+      'placeholder': 'Please add a review to get the conversation started.'
+    })
     let textAreaWrapper = suggestiveTextArea(textArea)
 
     return h('div', { classList }, [
