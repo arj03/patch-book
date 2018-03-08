@@ -15,18 +15,18 @@ exports.create = function (api) {
   return nest({ 'book.async.get': get })
 
   // FIXME: this might need to be book.obs.get, but have to wait and see with using about
-  function get(key, cb) {
+  function get(key, getComments, cb) {
     pull(
       pull.values([key]),
       pull.asyncMap((key, cb) => api.sbot.async.get(key, cb)),
-      pull.asyncMap((msg, cb) => hydrate(msg, key, (data) => cb(null, data))),
+      pull.asyncMap((msg, cb) => hydrate(msg, key, getComments, (data) => cb(null, data))),
       pull.drain(cb)
     )
   }
 
   // internal
 
-  function hydrate(msg, key, cb) {
+  function hydrate(msg, key, getComments, cb) {
     var book = {
       key,
       common: msg.content,
@@ -40,7 +40,7 @@ exports.create = function (api) {
 
     cb(book)
 
-    applyAmends(book, updatedBook => getCommentsOnSubjective(updatedBook, cb))
+    applyAmends(book, updatedBook => getComments ? getCommentsOnSubjective(updatedBook, cb) : cb(updatedBook))
   }
 
   function getCommentsOnSubjective(book, cb)

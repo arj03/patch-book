@@ -13,12 +13,12 @@ exports.needs = nest({
 exports.gives = nest('book.obs.book')
 
 exports.create = function (api) {
-  return nest('book.obs.book', function (id) {
+  return nest('book.obs.book', function (id, getComments) {
     if (!ref.isLink(id)) throw new Error('a valid id must be specified')
 
     let book = api.book.obs.struct({ key: id })
 
-    api.book.async.get(id, dbBook => {
+    api.book.async.get(id, getComments, dbBook => {
       book.title.set(dbBook.common.title)
       book.authors.set(dbBook.common.authors)
       book.description.set(dbBook.common.description)

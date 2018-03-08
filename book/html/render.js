@@ -38,7 +38,7 @@ exports.create = function (api) {
 
     if (pageId === msg.key) isCard.set(false)
 
-    const obs = api.book.obs.book(msg.key)
+    const obs = api.book.obs.book(msg.key, !isCard())
 
     const element = h('div', {attributes: {tabindex: '0'}},
       when(isCard,
