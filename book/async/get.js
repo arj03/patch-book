@@ -1,5 +1,4 @@
 const pull = require('pull-stream')
-const sort = require('pull-sort')
 const nest = require('depnest')
 
 exports.gives = nest({
@@ -7,7 +6,7 @@ exports.gives = nest({
 })
 
 exports.needs = nest({
-  'sbot.pull.links': 'first',
+  'sbot.pull.backlinks': 'first',
   'sbot.async.get': 'first',
   'keys.sync.id': 'first'
 })
@@ -41,8 +40,7 @@ exports.create = function (api) {
 
     cb(book)
 
-    applyAmends(book, updatedBook =>
-                getCommentsOnSubjective(updatedBook, cb))
+    applyAmends(book, updatedBook => getCommentsOnSubjective(updatedBook, cb))
   }
 
   function getCommentsOnSubjective(book, cb)
@@ -55,20 +53,16 @@ exports.create = function (api) {
             pull.values(Object.values(subj.allKeys)),
             pull.drain(key => {
               pull(
-                api.sbot.pull.links({ dest: key, rel: 'root', live: key == subj.key }),
-                pull.filter(data => data.key),
-                pull.asyncMap((data, cb) => {
-                  api.sbot.async.get(data.key, (err, msg) => {
-                    msg.key = data.key
-                    cb(err, msg)
-                  })
+                api.sbot.pull.backlinks({
+                  query: [ {$filter: { dest: key }} ],
+                  index: 'DTA', // use asserted timestamps
+                  live: true
                 }),
-                //sort((a, b) => a.timestamp - b.timestamp),
                 pull.drain(msg => {
-                  if (msg.content.type !== "post") return
+                  if (msg.sync || msg.value.content.type !== "post") return
 
                   if (!subj.comments.some(c => c.key == msg.key)) {
-                    subj.comments.push(msg)
+                    subj.comments.push(msg.value)
                     cb(book)
                   }
                 })
@@ -84,31 +78,24 @@ exports.create = function (api) {
     let allAuthorKeys = {}
 
     pull(
-      api.sbot.pull.links({ dest: book.key }), // FIXME: can't do live
-                                               // together with
-                                               // sorting and links
-                                               // doesn't support timestamp
-      pull.filter(data => data.key),
-      pull.asyncMap((data, cb) => {
-        api.sbot.async.get(data.key, (err, msg) => {
-          msg.key = data.key
-          cb(err, msg)
-        })
+      api.sbot.pull.backlinks({
+        query: [ {$filter: { dest: book.key }} ],
+        index: 'DTA', // use asserted timestamps
+        live: true
       }),
-      sort((a, b) => a.timestamp - b.timestamp),
       pull.drain(msg => {
-        if (msg.content.type !== "about") return
+        if (msg.sync || msg.value.content.type !== "about") return
 
-        const { rating, ratingMax, ratingType, shelve, genre, review } = msg.content
+        const { rating, ratingMax, ratingType, shelve, genre, review } = msg.value.content
 
-        if (!allAuthorKeys[msg.author])
-          allAuthorKeys[msg.author] = []
+        if (!allAuthorKeys[msg.value.author])
+          allAuthorKeys[msg.value.author] = []
 
-        let allKeys = allAuthorKeys[msg.author]
+        let allKeys = allAuthorKeys[msg.value.author]
         allKeys.push(msg.key)
 
         if (rating || ratingMax || ratingType || shelve || genre || review) {
-          book.subjective[msg.author] = {
+          book.subjective[msg.value.author] = {
             key: msg.key,
             allKeys,
             rating,
@@ -120,7 +107,7 @@ exports.create = function (api) {
             comments: []
           }
         } else
-          book.common = Object.assign({}, book.common, msg.content)
+          book.common = Object.assign({}, book.common, msg.value.content)
 
         cb(book)
       })
