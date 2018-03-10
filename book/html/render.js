@@ -45,7 +45,7 @@ exports.create = function (api) {
         api.book.html.layout(msg, {layout: 'card', isEditing, isCard, obs}),
         api.book.html.layout(msg, {layout: 'detail', isEditing, isCard, obs})
     ))
-
+    
     return api.message.html.decorate(element, { msg })
   }
 }
