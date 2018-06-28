@@ -46,22 +46,20 @@ exports.create = (api) => {
     })
 
     const content = [
-      h('a', { href: msg.key }, [
-        h('.toggle-layout', {
-          'ev-click': e => {
-            e.preventDefault()
-            isCard.set(false)
-          }
-        }, '+'),
-        h('.details', [
-          images({images: obs.images}),
-          h('div', [
-            title({title: obs.title, msg}),
-            series({series: obs.series, seriesNo: obs.seriesNo}),
-            authors({authors: obs.authors}),
-            when(hasRating, h('span.text', { innerHTML: ratingComputed })),
-            shortDescription(obs.description)
-          ])
+      h('.toggle-layout', {
+        'ev-click': e => {
+          e.preventDefault()
+          isCard.set(false)
+        }
+      }, '+'),
+      h('.details', [
+        images({images: obs.images}),
+        h('div', [
+          title({title: obs.title, msg}),
+          series({series: obs.series, seriesNo: obs.seriesNo}),
+          authors({authors: obs.authors}),
+          when(hasRating, h('span.text', { innerHTML: ratingComputed })),
+          shortDescription(obs.description)
         ])
       ])
     ]
@@ -70,10 +68,12 @@ exports.create = (api) => {
 
     return h('Message -book-card', [
       h('section.avatar', {}, api.about.html.image(msg.value.author)),
-      h('section.timestamp', {}, timestamp(msg)),
-      h('section.meta', {}, meta(msg, { rawMessage })),
       h('section.content', {}, content),
-      h('section.raw-content', rawMessage)
+      h('section.raw-content', rawMessage),
+      h('section.bottom', [
+        h('section.timestamp', {}, timestamp(msg)),
+        h('section.meta', {}, meta(msg, { rawMessage }))
+      ])
     ])
   }
 }

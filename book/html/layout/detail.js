@@ -172,7 +172,7 @@ exports.create = (api) => {
     let textAreaWrapper = suggestiveTextArea(textArea)
     
     return [
-      h('section',
+      h('section.top',
         [api.about.html.image(user),
          h('span.text', [api.about.obs.name(user), when(showRating, ' rated ')]),
          ratingEdit(isOwnEditingSubj, subjective.rating),

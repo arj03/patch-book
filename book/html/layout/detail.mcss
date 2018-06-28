@@ -1,5 +1,6 @@
 Message -book-detail {
   display: block
+  margin-bottom: 10px
 
   section.title, section.authors, section.series {
     input {
@@ -28,6 +29,8 @@ Message -book-detail {
   }
 
   section.subjective {
+    margin-top: 30px
+
     section.actions {
       flex-basis: 100%
       display: flex
@@ -60,6 +63,11 @@ Message -book-detail {
       }
     }
     
+    section.top {
+      border-top: 1px solid gainsboro
+      padding-top: 10px
+    }
+      
     section {
       margin-top: 5px
       line-height: 2rem

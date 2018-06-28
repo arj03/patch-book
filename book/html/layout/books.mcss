@@ -5,6 +5,7 @@ div.books {
      margin-top: 20px
      font-size: 1.0rem
      padding-left: 30px
+     width: 300px
 
      ul {
        list-style-type: none
