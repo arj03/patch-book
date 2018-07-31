@@ -53,8 +53,6 @@ exports.create = (api) => {
   }
 
   function ratingTypeEdit(isEditing, value) {
-    let getEmojiSuggestions = api.emoji.async.suggest()
-
     let ratingTypeInput = h('input', {'ev-input': e => value.set(e.target.value),
                                       value: value, placeholder: 'rating type' })
 
@@ -62,7 +60,7 @@ exports.create = (api) => {
 
     addSuggest(ratingTypeInput, (inputText, cb) => {
       if (inputText[0] === ':') {
-        cb(null, getEmojiSuggestions(inputText.slice(1)))
+        cb(null, api.emoji.async.suggest(inputText.slice(1), cb))
       }
     }, {cls: 'PatchSuggest'})
 
@@ -91,19 +89,15 @@ exports.create = (api) => {
   }
 
   function suggestiveTextArea(textArea) {
-    var getProfileSuggestions = api.about.async.suggest()
-    var getChannelSuggestions = api.channel.async.suggest()
-    var getEmojiSuggestions = api.emoji.async.suggest()
-
     let textAreaWrapper = h('span', textArea)
 
     addSuggest(textArea, (inputText, cb) => {
       const char = inputText[0]
       const wordFragment = inputText.slice(1)
 
-      if (char === '@') cb(null, getProfileSuggestions(wordFragment))
-      if (char === '#') cb(null, getChannelSuggestions(wordFragment))
-      if (char === ':') cb(null, getEmojiSuggestions(wordFragment))
+      if (char === '@') cb(null, api.about.async.suggest(wordFragment, cb))
+      if (char === '#') cb(null, api.channel.async.suggest(wordFragment, cb))
+      if (char === ':') cb(null, api.emoji.async.suggest(wordFragment, cb))
     }, {cls: 'PatchSuggest'})
 
     return textAreaWrapper
