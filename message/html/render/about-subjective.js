@@ -39,7 +39,7 @@ exports.create = function (api) {
     const name = Value('')
     const bookKey = msg.value.content.about
     api.sbot.async.get(bookKey, (err, msg) => {
-      let originalTitle = msg.content.title
+      let originalTitle = msg.value.content.title
       let latestTitle = api.about.obs.latestValue(bookKey, 'title')()
       name.set(latestTitle || originalTitle)
     })
