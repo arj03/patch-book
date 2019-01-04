@@ -23,9 +23,8 @@ exports.create = function (api) {
       return
 
     const content = msg.value.content
-    
-    if (content.type == 'about' && content.rating && content.ratingType)
-    {
+
+    if (content.type == 'about' && content.rating && content.ratingType) {
       const element = api.message.html.layout(msg, extend({
         content: renderSubjective(msg),
         layout: content.review ? 'default' : 'mini'
@@ -39,9 +38,14 @@ exports.create = function (api) {
     const name = Value('')
     const bookKey = msg.value.content.about
     api.sbot.async.get(bookKey, (err, msg) => {
-      let originalTitle = msg.value.content.title
       let latestTitle = api.about.obs.latestValue(bookKey, 'title')()
-      name.set(latestTitle || originalTitle)
+      if (err) {
+        console.log(`${err.message} in ${bookKey} title lookup`)
+        name.set(latestTitle)
+      } else {
+        let originalTitle = msg.content.title
+        name.set(latestTitle || originalTitle)
+      }
     })
     return name
   }
